@@ -8,6 +8,13 @@
     <PostList v-bind:posts="posts"/>
 
     <h3>Reply to this Thread</h3>
+    <!--
+      @PostEditor
+        @binding {string} threadId id of the thread
+
+      trigered on savePost
+      @event savePost
+    --> 
     <PostEditor 
     v-on:savePost="addPost"
     v-bind:threadId="id"/>

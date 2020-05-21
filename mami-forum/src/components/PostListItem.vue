@@ -16,14 +16,22 @@
         {{post.text}}
       </div>
     </div>
-    <div class="post-date text-faded">
-      {{post.publishedAt}}
+    <!--
+      @div
+        @binding {string} title humane date of the diffDate
+    -->
+    <div
+      class="post-date text-faded"
+      v-bind:title="post.publishedAt | humaneDate"
+      >
+      {{post.publishedAt | diffDate}}
     </div>
   </div>
 </template>
 
 <script>
 import sourceData from '@/data.json'
+import moment from 'moment'
 
 export default {
   name: 'PostListItem',
@@ -39,6 +47,14 @@ export default {
     },
     userPostsCount () {
       return Object.keys(this.user.posts).length
+    }
+  },
+  filters: {
+    humaneDate (date) {
+      return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a')
+    },
+    diffDate (date) {
+      return moment.unix(date).fromNow()
     }
   }
 }
