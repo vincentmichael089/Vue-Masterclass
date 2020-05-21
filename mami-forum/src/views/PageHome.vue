@@ -14,7 +14,7 @@ import sourceData from '@/data.json'
 import ThreadList from '@/components/ThreadList.vue'
 
 export default {
-  name: 'HelloWorld',
+  name: 'PageHome',
   data () {
     return {
       // transform data to array

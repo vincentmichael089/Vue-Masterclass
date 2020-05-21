@@ -6,7 +6,7 @@
           @router-link
             @binding {Object} name, key, components and id of the thread
         -->
-        <router-link v-bind:to="{name: 'ThreadShow', params: {id: thread['.key']}}">
+        <router-link v-bind:to="{name: 'PageThreadShow', params: {id: thread['.key']}}">
           {{thread.title}}
         </router-link>
       </p>
