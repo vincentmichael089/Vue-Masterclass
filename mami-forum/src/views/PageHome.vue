@@ -2,29 +2,29 @@
   <div class="col-full">
     <h1>Welcome to Mami-forum!</h1>
     <!--
-      @div
-        @binding {Object} threads list of threads
+      @ForumList
+        @binding {Array} forums forums list
     -->
-    <ThreadList v-bind:threads="threads"/>
+    <ForumList v-bind:forums="forums"/>
   </div>
 </template>
 
 <script>
 import sourceData from '@/data.json'
-import ThreadList from '@/components/ThreadList.vue'
+import ForumList from '@/components/ForumList.vue'
 
 export default {
   name: 'PageHome',
   data () {
     return {
       // transform data to array
-      threads: Object.values(sourceData.threads),
+      forums: Object.values(sourceData.forums),
       posts: sourceData.posts,
       users: sourceData.users
     }
   },
   components: {
-    ThreadList
+    ForumList
   }
 }
 </script>
