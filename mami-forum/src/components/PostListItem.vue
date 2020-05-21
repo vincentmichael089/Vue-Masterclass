@@ -17,24 +17,22 @@
       </div>
     </div>
     <!--
-      @div
-        @binding {string} title humane date of the diffDate
+      @AppDate
+        @binding {string} date created date of post
     -->
-    <div
-      class="post-date text-faded"
-      v-bind:title="post.publishedAt | humaneDate"
-      >
-      {{post.publishedAt | diffDate}}
-    </div>
+    <AppDate v-bind:date="post.publishedAt"/>
   </div>
 </template>
 
 <script>
 import sourceData from '@/data.json'
-import moment from 'moment'
+import AppDate from '@/components/AppDate'
 
 export default {
   name: 'PostListItem',
+  components: {
+    AppDate
+  },
   props: {
     post: {
       type: Object,
@@ -47,14 +45,6 @@ export default {
     },
     userPostsCount () {
       return Object.keys(this.user.posts).length
-    }
-  },
-  filters: {
-    humaneDate (date) {
-      return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a')
-    },
-    diffDate (date) {
-      return moment.unix(date).fromNow()
     }
   }
 }

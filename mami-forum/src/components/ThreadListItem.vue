@@ -11,7 +11,12 @@
         </router-link>
       </p>
       <p class="text-faded text-xsmall">
-        By <a href="#">{{user.name}}</a>, {{thread.publishedAt}}.
+        By <a href="#">{{user.name}}</a>, 
+        <!--
+          @AppDate
+            @binding {string} date created date of post
+        -->
+        <AppDate v-bind:date="thread.publishedAt"/>.
       </p>
     </div>
 
@@ -34,7 +39,12 @@
 
 <script>
   import sourceData from '@/data'
+  import AppDate from '@/components/AppDate'
+
   export default {
+    components: {
+      AppDate
+    },
     props: {
       thread: {
         required: true,
