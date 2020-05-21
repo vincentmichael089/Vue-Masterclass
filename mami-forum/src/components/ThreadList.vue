@@ -2,7 +2,7 @@
   <div class="thread-list">
     <h2 class="list-title">Threads</h2>  
     <!--
-      @div
+      @ThreadListItem
         @binding {Array} thread thread in threads
         @binding {string} key key of the post
     -->

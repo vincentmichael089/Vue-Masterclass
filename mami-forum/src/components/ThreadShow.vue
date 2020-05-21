@@ -7,13 +7,13 @@
         @div
           @binding {string} key key of the post
       -->
-      <div v-for="postId in thread.posts"
-      v-bind:key="postId"
-           class="post"
+      <div 
+        v-for="postId in thread.posts"
+        v-bind:key="postId"
+        class="post"
       >
         <div class="user-info">
           <a href="#" class="user-name">{{users[posts[postId].userId].name}}</a>
-
           <a href="#">
             <!--
                 @img
