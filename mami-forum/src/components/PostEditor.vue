@@ -36,7 +36,7 @@ export default {
       const post = {
         '.key': postId,
         publishedAt: Math.floor(Date.now() / 1000),
-        text: this.newReply,
+        text: this.postData,
         threadId: this.threadId,
         userId: 'jUjmgCurRRdzayqbRMO7aTG9X1G2'
       }
