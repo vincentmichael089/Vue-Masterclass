@@ -1,9 +1,13 @@
 <template>
   <div class="forum-listing">
     <div class="forum-details">
+      <!--
+        @router-link
+          @binding {0bject} to navigate to route PageForum
+      -->
       <router-link
         class="text-xlarge"
-        :to="{name: 'Forum', params: {id: forum['.key']}}"
+        v-bind:to="{name: 'PageForum', params: {id: forum['.key']}}"
       >
         {{forum.name}}
       </router-link>
