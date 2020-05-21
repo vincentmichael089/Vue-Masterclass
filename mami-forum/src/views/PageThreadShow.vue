@@ -6,28 +6,18 @@
         @binding {Array} posts pass posts to PostList
     -->
     <PostList v-bind:posts="posts"/>
-    
+
     <h3>Reply to this Thread</h3>
-    <!--
-      trigered on submit
-      @event submit
-    -->
-    <form v-on:submit.prevent="addPost">
-      <div class="form-group">
-        <textarea 
-          v-model="newReply"
-          name="" id="" cols="30" rows="10" class="form-input"></textarea>
-      </div>
-      <div class="form-actions">
-        <button class="btn-blue">Reply</button>
-      </div>
-    </form>
+    <PostEditor 
+    v-on:savePost="addPost"
+    v-bind:threadId="id"/>
   </div>
 </template>
 
 <script>
 import sourceData from '@/data.json'
 import PostList from '@/components/PostList'
+import PostEditor from '@/components/PostEditor'
 
 export default {
   props: {
@@ -37,12 +27,12 @@ export default {
     }
   },
   components: {
-    PostList
+    PostList,
+    PostEditor
   },
   data () {
     return {
-      thread: sourceData.threads[this.id],
-      newReply: ''
+      thread: sourceData.threads[this.id]
     }
   },
   computed: {
@@ -52,17 +42,9 @@ export default {
     }
   },
   methods: {
-    addPost () {
-      const postId = Date.now() + Math.random()
-
-      const post = {
-        '.key': postId,
-        publishedAt: Math.floor(Date.now() / 1000),
-        text: this.newReply,
-        threadId: this.id,
-        userId: 'jUjmgCurRRdzayqbRMO7aTG9X1G2'
-      }
-
+    addPost (event) {
+      const post = event.post
+      const postId = event.post['.key']
       // add post to list of posts
       // sourceData.posts[postId] = post // but this one is not reactive
       this.$set(sourceData.posts, postId, post) // with set it become reactive
@@ -73,7 +55,6 @@ export default {
 
       // append the post to the user
       this.$set(sourceData.users[post.userId].posts, postId, postId)
-      this.newReply = ''
     }
   }
 }
