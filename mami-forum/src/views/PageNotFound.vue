@@ -2,6 +2,10 @@
   <div class="col-full">
     <h1>Whoopsie doopsie! we found nothing here! </h1>
     <p>We couldn't find the page you're looking for :(
+      <!--
+        @router-link
+          @binding {route} name name of the destination route
+      -->
       <router-link v-bind:to="{name: 'PageHome'}">Back to Home</router-link>
     </p>
   </div>
