@@ -1,6 +1,10 @@
 <template>
    <div class="col-large push-top">
     <h1>{{thread.title}}</h1>
+     <p>
+      Creadted By <a href="#" class="link-unstyled">{{creator.name}}</a>, <AppDate v-bind:date="thread.publishedAt"/>.
+      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">3 replies by 3 contributors</span>
+    </p>
     <!--
       @PostList
         @binding {Array} posts pass posts to PostList
@@ -39,7 +43,8 @@ export default {
   },
   data () {
     return {
-      thread: sourceData.threads[this.id]
+      thread: sourceData.threads[this.id],
+      creator: sourceData.users[sourceData.threads[this.id].userId]
     }
   },
   computed: {
@@ -62,6 +67,7 @@ export default {
 
       // append the post to the user
       this.$set(sourceData.users[post.userId].posts, postId, postId)
+      console.log(sourceData)
     }
   }
 }

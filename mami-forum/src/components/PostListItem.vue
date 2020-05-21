@@ -26,13 +26,9 @@
 
 <script>
 import sourceData from '@/data.json'
-import AppDate from '@/components/AppDate'
 
 export default {
   name: 'PostListItem',
-  components: {
-    AppDate
-  },
   props: {
     post: {
       type: Object,
