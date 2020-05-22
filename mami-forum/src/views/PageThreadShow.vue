@@ -41,13 +41,13 @@ export default {
     PostList,
     PostEditor
   },
-  data () {
-    return {
-      thread: this.$store.state.threads[this.id],
-      creator: this.$store.state.users[this.$store.state.threads[this.id].userId]
-    }
-  },
   computed: {
+    thread () {
+      return this.$store.state.threads[this.id]
+    },
+    creator () {
+      return this.$store.state.users[this.$store.state.threads[this.id].userId]
+    },
     posts () {
       const postIds = Object.values(this.thread.posts) // post ids that belong to the thread
       return Object.values(this.$store.state.posts).filter(post => postIds.includes(post['.key'])) // change to array and find the post that is in posts

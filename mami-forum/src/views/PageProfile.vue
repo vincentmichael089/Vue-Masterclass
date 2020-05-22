@@ -30,7 +30,7 @@
 
       <div class="profile-header">
         <span class="text-lead">
-            Joker's recent activity
+            {{user.name}}'s recent activity
         </span>
         <a href="#">See only started threads?</a>
       </div>

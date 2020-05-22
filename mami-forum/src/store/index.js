@@ -17,7 +17,11 @@ export default new vuex.Store({
   actions: {
     createPost (context, post) {
       const postId = Date.now() + Math.random()
+      const timestamp = Math.floor(Date.now() / 1000)
+
       post['.key'] = postId
+      post.userId = context.state.authId
+      post.publishedAt = timestamp
 
       context.commit('setPost', {post, postId})
       context.commit('addPostToThread', {threadId: post.threadId, postId})
