@@ -4,6 +4,7 @@ import PageHome from '@/views/PageHome'
 import PageForum from '@/views/PageForum'
 import PageThreadShow from '@/views/PageThreadShow'
 import PageThreadCreate from '@/views/PageThreadCreate'
+import PageThreadEdit from '@/views/PageThreadEdit'
 import PageNotFound from '@/views/PageNotFound'
 import PageCategory from '@/views/PageCategory'
 import PageProfile from '@/views/PageProfile'
@@ -28,6 +29,12 @@ export default new Router({
       path: '/thread/:id',
       name: 'PageThreadShow',
       component: PageThreadShow,
+      props: true
+    },
+    {
+      path: '/thread/:id/edit',
+      name: 'PageThreadEdit',
+      component: PageThreadEdit,
       props: true
     },
     {

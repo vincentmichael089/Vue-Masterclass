@@ -26,6 +26,7 @@ export default new vuex.Store({
       context.commit('setPost', {post, postId})
       context.commit('addPostToThread', {threadId: post.threadId, postId})
       context.commit('addPostToUser', {postId, userId: post.userId})
+      return Promise.resolve(context.state.posts[postId])
     },
 
     updateUser (context, userData) {
@@ -49,9 +50,30 @@ export default new vuex.Store({
         context.commit('addThreadToForum', {threadId, forumId})
         context.commit('addThreadToUser', {threadId, userId})
 
+        // wait for the createPost  to be done and then get the firstPostId
+        // (if not using promise it will not aware of the firstPostId resulting
+        // in crash when you create new post and proceed to edit the post)
         context.dispatch('createPost', {text, threadId})
+          .then(post => {
+            context.commit('setThread', {threadId, thread: {...thread, firstPostId: post['.key']}})
+          })
 
         resolve(context.state.threads[threadId])
+      })
+    },
+
+    updateThread (context, {id, title, text}) {
+      return new Promise((resolve, reject) => {
+        const thread = context.state.threads[id]
+        const post = context.state.posts[thread.firstPostId]
+
+        const newThread = {...thread, title}
+        const newPost = {...post, text}
+
+        context.commit('setThread', {thread: newThread, threadId: id})
+        context.commit('setPost', {post: newPost, postId: thread.firstPostId})
+
+        resolve(newThread)
       })
     }
   },

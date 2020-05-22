@@ -1,6 +1,13 @@
 <template>
    <div class="col-large push-top">
     <h1>{{thread.title}}</h1>
+     <router-link
+        v-bind:to="{name: 'PageThreadEdit', id: this.id}"
+        class="btn-green btn-small"
+        tag="button"
+      >
+        Edit Thread
+      </router-link>
      <p>
       Creadted By <a href="#" class="link-unstyled">{{creator.name}}</a>,
       <!--
