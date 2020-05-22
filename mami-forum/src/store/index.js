@@ -27,8 +27,29 @@ export default new vuex.Store({
       context.commit('addPostToThread', {threadId: post.threadId, postId})
       context.commit('addPostToUser', {postId, userId: post.userId})
     },
+
     updateUser (context, userData) {
       context.commit('setUser', {userId: userData['.key'], userData})
+    },
+
+    createThread (context, {title, text, forumId}) {
+      const threadId = Date.now() + Math.random()
+      const timestamp = Math.floor(Date.now() / 1000)
+      const userId = context.state.authId
+
+      const thread = {
+        '.key': threadId,
+        title,
+        forumId,
+        userId,
+        publishedAt: timestamp
+      }
+
+      context.commit('setThread', {thread, threadId})
+      context.commit('addThreadToForum', {threadId, forumId})
+      context.commit('addThreadToUser', {threadId, userId})
+
+      context.dispatch('createPost', {text, threadId})
     }
   },
   mutations: {
@@ -37,35 +58,43 @@ export default new vuex.Store({
     },
 
     addPostToThread (state, {postId, threadId}) {
-      Vue.set(state.threads[threadId].posts, postId, postId)
+      const thread = state.threads[threadId]
+      if (!thread.posts) {
+        Vue.set(thread, 'posts', {})
+      }
+      Vue.set(thread.posts, postId, postId)
     },
 
     addPostToUser (state, {postId, userId}) {
-      Vue.set(state.users[userId].posts, postId, postId)
+      const user = state.users[userId]
+      if (!user.posts) {
+        Vue.set(user, 'posts', {})
+      }
+      Vue.set(user.posts, postId, postId)
+    },
+
+    setThread (state, {thread, threadId}) {
+      Vue.set(state.threads, threadId, thread)
+    },
+
+    addThreadToForum (state, {threadId, forumId}) {
+      const forum = state.forums[forumId]
+      if (!forum.threads) {
+        Vue.set(forum, 'threads', {})
+      }
+      Vue.set(forum.threads, threadId, threadId)
+    },
+
+    addThreadToUser (state, {threadId, userId}) {
+      const user = state.users[userId]
+      if (!user.threads) {
+        Vue.set(user, 'threads', {})
+      }
+      Vue.set(user.threads, threadId, threadId)
     },
 
     setUser (state, {userId, userData}) {
       Vue.set(state.users, userId, userData)
     }
-
   }
-
-  // ,
-  // methods: {
-  //   addPost (event) {
-  //     const post = event.post
-  //     const postId = event.post['.key']
-  //     // add post to list of posts
-  //     // this.$store.state.posts[postId] = post // but this one is not reactive
-  //     this.$set(this.$store.state.posts, postId, post) // with set it become reactive
-
-  //     // append the post id to the thread
-  //     // this.thread.posts[postId] = postId // but this one is not reactive
-  //     this.$set(this.thread.posts, postId, postId) // with set it become reactive
-
-  //     // append the post to the user
-  //     this.$set(this.$store.state.users[post.userId].posts, postId, postId)
-  //     console.log(this.$store.state)
-  //   }
-  // }
 })
