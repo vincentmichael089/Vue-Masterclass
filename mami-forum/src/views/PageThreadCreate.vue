@@ -18,7 +18,7 @@
       </div>
 
       <div class="btn-group">
-        <button class="btn btn-ghost">Cancel</button>
+        <button class="btn btn-ghost" v-on:click.prevent="cancel">Cancel</button>
         <button class="btn btn-blue" type="submit" name="Publish">Publish </button>
       </div>
     </form>
@@ -45,7 +45,10 @@ export default {
         forumId: this.forum['.key'],
         title: this.title,
         text: this.text
-      })
+      }).then(thread => this.$router.push({name: 'PageThreadShow', params: {id: thread['.key']}}))
+    },
+    cancel () {
+      this.$router.push({name: 'PageForum', params: {id: this.forum['.key']}})
     }
   }
 }

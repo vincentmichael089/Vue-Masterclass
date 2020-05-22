@@ -16,7 +16,7 @@ export default new vuex.Store({
   },
   actions: {
     createPost (context, post) {
-      const postId = Date.now() + Math.random()
+      const postId = 'post' + Date.now() + Math.random()
       const timestamp = Math.floor(Date.now() / 1000)
 
       post['.key'] = postId
@@ -33,23 +33,26 @@ export default new vuex.Store({
     },
 
     createThread (context, {title, text, forumId}) {
-      const threadId = Date.now() + Math.random()
-      const timestamp = Math.floor(Date.now() / 1000)
-      const userId = context.state.authId
+      return new Promise((resolve, reject) => {
+        const threadId = 'thread' + Date.now() + Math.random()
+        const timestamp = Math.floor(Date.now() / 1000)
+        const userId = context.state.authId
 
-      const thread = {
-        '.key': threadId,
-        title,
-        forumId,
-        userId,
-        publishedAt: timestamp
-      }
+        const thread = {
+          '.key': threadId,
+          title,
+          forumId,
+          userId,
+          publishedAt: timestamp
+        }
+        context.commit('setThread', {thread, threadId})
+        context.commit('addThreadToForum', {threadId, forumId})
+        context.commit('addThreadToUser', {threadId, userId})
 
-      context.commit('setThread', {thread, threadId})
-      context.commit('addThreadToForum', {threadId, forumId})
-      context.commit('addThreadToUser', {threadId, userId})
+        context.dispatch('createPost', {text, threadId})
 
-      context.dispatch('createPost', {text, threadId})
+        resolve(context.state.threads[threadId])
+      })
     }
   },
   mutations: {

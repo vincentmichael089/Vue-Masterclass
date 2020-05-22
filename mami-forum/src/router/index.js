@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import PageHome from '@/views/PageHome'
 import PageForum from '@/views/PageForum'
 import PageThreadShow from '@/views/PageThreadShow'
+import PageThreadCreate from '@/views/PageThreadCreate'
 import PageNotFound from '@/views/PageNotFound'
 import PageCategory from '@/views/PageCategory'
 import PageProfile from '@/views/PageProfile'
@@ -16,6 +17,12 @@ export default new Router({
       path: '/',
       name: 'PageHome',
       component: PageHome
+    },
+    {
+      path: '/thread/create',
+      name: 'PageThreadCreate',
+      component: PageThreadCreate,
+      props: true
     },
     {
       path: '/thread/:id',
