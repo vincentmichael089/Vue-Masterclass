@@ -1,12 +1,26 @@
 <template>
   <div class="flex-grid">
     <!--
+      @UserProfileCardEditor
+        @binding {Object} user user
+        @binding {Number} userPostsCount count posts by user
+        @binding {Number} userThreadsCount count threads by user
+    -->
+    <UserProfileCardEditor 
+    v-if="edit"
+    v-bind:user="user"
+    v-bind:userPostsCount="userPostsCount"
+    v-bind:userThreadsCount="userThreadsCount"
+    />
+
+    <!--
       @UserProfileCard
         @binding {Object} user user
         @binding {Number} userPostsCount count posts by user
         @binding {Number} userThreadsCount count threads by user
     -->
-    <UserProfileCardEditor
+    <UserProfileCard
+    v-else
     v-bind:user="user"
     v-bind:userPostsCount="userPostsCount"
     v-bind:userThreadsCount="userThreadsCount"
@@ -43,6 +57,12 @@ export default {
     PostList,
     UserProfileCard,
     UserProfileCardEditor
+  },
+  props: {
+    edit: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     ...mapGetters({
