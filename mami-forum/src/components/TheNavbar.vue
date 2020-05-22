@@ -1,6 +1,5 @@
 <template>
   <header class="header" id="header">
-
     <!--
       @router-link
         @binding {route} to route to PageHome
@@ -43,14 +42,22 @@
         <!--</li>-->
 
         <li class="navbar-user">
-          <a href="#">
+          <!--
+            @router-link
+              @binding {route} route navigate to PageProfile
+          -->
+          <router-link v-bind:to="{name: 'PageProfile'}">
+            <!--
+              @img
+                @binding {string} src src of avatar
+            -->
             <img class="avatar-small" v-bind:src="user.avatar"
                  alt="">
             <span>
                 {{user.name}}
                 <img class="icon-profile" src="../assets/img/arrow-profile.svg" alt="">
             </span>
-          </a>
+          </router-link>
 
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
