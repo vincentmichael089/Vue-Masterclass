@@ -19,7 +19,7 @@ export default new Router({
       component: PageHome
     },
     {
-      path: '/thread/create',
+      path: '/thread/create/:forumId',
       name: 'PageThreadCreate',
       component: PageThreadCreate,
       props: true

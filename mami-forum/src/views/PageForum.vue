@@ -7,7 +7,7 @@
           <p class="text-lead">{{forum.description}}</p>
         </div>
         <router-link
-          v-bind:to="{name: 'PageThreadCreate', params: {forum: this.forum}}"
+          v-bind:to="{name: 'PageThreadCreate', params: {forumId: this.forum['.key']}}"
           class="btn-green btn-small"
         >
           Start a thread
