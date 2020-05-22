@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import sourceData from '@/data.json'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
 
@@ -48,14 +47,14 @@ export default {
   },
   data () {
     return {
-      thread: sourceData.threads[this.id],
-      creator: sourceData.users[sourceData.threads[this.id].userId]
+      thread: this.$store.state.threads[this.id],
+      creator: this.$store.state.users[this.$store.state.threads[this.id].userId]
     }
   },
   computed: {
     posts () {
       const postIds = Object.values(this.thread.posts) // post ids that belong to the thread
-      return Object.values(sourceData.posts).filter(post => postIds.includes(post['.key'])) // change to array and find the post that is in posts
+      return Object.values(this.$store.state.posts).filter(post => postIds.includes(post['.key'])) // change to array and find the post that is in posts
     }
   },
   methods: {
@@ -63,16 +62,16 @@ export default {
       const post = event.post
       const postId = event.post['.key']
       // add post to list of posts
-      // sourceData.posts[postId] = post // but this one is not reactive
-      this.$set(sourceData.posts, postId, post) // with set it become reactive
+      // this.$store.state.posts[postId] = post // but this one is not reactive
+      this.$set(this.$store.state.posts, postId, post) // with set it become reactive
 
       // append the post id to the thread
       // this.thread.posts[postId] = postId // but this one is not reactive
       this.$set(this.thread.posts, postId, postId) // with set it become reactive
 
       // append the post to the user
-      this.$set(sourceData.users[post.userId].posts, postId, postId)
-      console.log(sourceData)
+      this.$set(this.$store.state.users[post.userId].posts, postId, postId)
+      console.log(this.$store.state)
     }
   }
 }

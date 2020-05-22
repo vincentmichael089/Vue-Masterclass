@@ -11,15 +11,13 @@
 </template>
 
 <script>
-import sourceData from '@/data.json'
 import CategoryList from '@/components/CategoryList.vue'
 
 export default {
   name: 'PageHome',
-  data () {
-    return {
-      // transform data to array
-      categories: Object.values(sourceData.categories)
+  computed: {
+    categories () {
+      return Object.values(this.$store.state.categories)
     }
   },
   components: {

@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import sourceData from '@/data.json'
 
 export default {
   name: 'PostListItem',
@@ -37,7 +36,7 @@ export default {
   },
   computed: {
     user () {
-      return sourceData.users[this.post.userId]
+      return this.$store.state.users[this.post.userId]
     },
     userPostsCount () {
       return Object.keys(this.user.posts).length
