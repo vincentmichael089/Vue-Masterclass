@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--
-      trigered on submit
+      save event triggered on submit
       @event submit
     -->
     <form v-on:submit.prevent="save">
@@ -31,10 +31,7 @@ export default {
   },
   methods: {
     save () {
-      const postId = Date.now() + Math.random()
-
       const post = {
-        '.key': postId,
         publishedAt: Math.floor(Date.now() / 1000),
         text: this.postData,
         threadId: this.threadId,
@@ -42,6 +39,8 @@ export default {
       }
 
       this.$emit('savePost', {post: post})
+      this.$store.dispatch('createPost', post)
+
       this.newReply = ''
     }
   }

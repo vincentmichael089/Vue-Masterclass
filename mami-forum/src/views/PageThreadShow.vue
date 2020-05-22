@@ -20,12 +20,8 @@
     <!--
       @PostEditor
         @binding {string} threadId id of the thread
-
-      trigered on savePost
-      @event savePost
     --> 
     <PostEditor 
-    v-on:savePost="addPost"
     v-bind:threadId="id"/>
   </div>
 </template>
@@ -55,23 +51,6 @@ export default {
     posts () {
       const postIds = Object.values(this.thread.posts) // post ids that belong to the thread
       return Object.values(this.$store.state.posts).filter(post => postIds.includes(post['.key'])) // change to array and find the post that is in posts
-    }
-  },
-  methods: {
-    addPost (event) {
-      const post = event.post
-      const postId = event.post['.key']
-      // add post to list of posts
-      // this.$store.state.posts[postId] = post // but this one is not reactive
-      this.$set(this.$store.state.posts, postId, post) // with set it become reactive
-
-      // append the post id to the thread
-      // this.thread.posts[postId] = postId // but this one is not reactive
-      this.$set(this.thread.posts, postId, postId) // with set it become reactive
-
-      // append the post to the user
-      this.$set(this.$store.state.users[post.userId].posts, postId, postId)
-      console.log(this.$store.state)
     }
   }
 }
