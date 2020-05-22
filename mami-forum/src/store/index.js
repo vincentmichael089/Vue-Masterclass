@@ -5,7 +5,15 @@ import sourceData from '@/data.json'
 Vue.use(vuex)
 
 export default new vuex.Store({
-  state: sourceData,
+  state: {
+    ...sourceData,
+    authId: 'jUjmgCurRRdzayqbRMO7aTG9X1G2'
+  },
+  getters: {
+    authUser (state) {
+      return state.users[state.authId]
+    }
+  },
   actions: {
     createPost (context, post) {
       const postId = Date.now() + Math.random()
