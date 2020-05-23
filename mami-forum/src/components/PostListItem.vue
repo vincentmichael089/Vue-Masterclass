@@ -9,6 +9,7 @@
         -->
         <img class="avatar-large" v-bind:src="user.avatar" alt="">
       </a>
+      <p class="desktop-only text-small">{{userThreadsCount}} threads</p>
       <p class="desktop-only text-small">{{userPostsCount}} posts</p>
     </div>
     <div class="post-content">
@@ -60,6 +61,9 @@ export default {
     },
     userPostsCount () {
       return this.$store.getters.userPostsCount(this.user['.key'])
+    },
+    userThreadsCount () {
+      return this.$store.getters.userThreadsCount(this.user['.key'])
     }
   },
   components: {

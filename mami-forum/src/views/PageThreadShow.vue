@@ -15,7 +15,7 @@
           @binding {string} date created date of post
       -->
       <AppDate v-bind:date="thread.publishedAt"/>.
-      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">3 replies by 3 contributors</span>
+      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{repliesCount}} replies by {{contributorsCount}} contributors</span>
     </p>
     <!--
       @PostList
@@ -58,6 +58,21 @@ export default {
     posts () {
       const postIds = Object.values(this.thread.posts) // post ids that belong to the thread
       return Object.values(this.$store.state.posts).filter(post => postIds.includes(post['.key'])) // change to array and find the post that is in posts
+    },
+    repliesCount () {
+      return this.$store.getters.threadRepliesCount(this.thread['.key'])
+    },
+    contributorsCount () {
+      // find the replies
+      const replies = Object.keys(this.thread.posts)
+        .filter(postId => postId !== this.thread.firstPostId) // remove thread starter, return all reply posts id
+        .map(postId => this.$store.state.posts[postId]) // get all the thread replies from the post id
+
+      // get the user ids only from the replies
+      const userIds = replies.map(post => post.userId)
+
+      // count the unique ids
+      return [...new Set(userIds)].length
     }
   }
 }
