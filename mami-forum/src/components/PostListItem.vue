@@ -26,11 +26,15 @@
         ></PostEditor>
       </div>
     </div>
-    <!--
-      @AppDate
-        @binding {string} date created date of post
-    -->
-    <AppDate v-bind:date="post.publishedAt"/>
+    <div class="post-date text-faded">
+      <div v-if="post.edited" class="edition-info">this post has been edited.</div>
+      <!--
+        @AppDate
+          @binding {string} date created date of post
+      -->
+      <AppDate v-bind:date="post.publishedAt"/>
+    </div>
+
   </div>
 </template>
 
