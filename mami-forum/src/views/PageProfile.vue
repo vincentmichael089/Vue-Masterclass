@@ -69,10 +69,10 @@ export default {
       user: 'authUser'
     }),
     userThreadsCount () {
-      return countObjectProperties(this.user.threads)
+      return this.$store.getters.userThreadsCount(this.user['.key'])
     },
     userPostsCount () {
-      return countObjectProperties(this.user.posts)
+      return this.$store.getters.userPostsCount(this.user['.key'])
     },
     userPosts () {
       if (this.user.posts) { // if user has posts

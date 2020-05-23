@@ -40,7 +40,6 @@
 
 <script>
 import PostEditor from '@/components/PostEditor'
-import {countObjectProperties} from '@/utils'
 
 export default {
   name: 'PostListItem',
@@ -60,7 +59,7 @@ export default {
       return this.$store.state.users[this.post.userId]
     },
     userPostsCount () {
-      return countObjectProperties(this.user.posts)
+      return this.$store.getters.userPostsCount(this.user['.key'])
     }
   },
   components: {

@@ -2,6 +2,8 @@ import Vue from 'vue'
 import vuex from 'vuex'
 import sourceData from '@/data.json'
 
+import {countObjectProperties} from '@/utils'
+
 Vue.use(vuex)
 
 export default new vuex.Store({
@@ -12,6 +14,14 @@ export default new vuex.Store({
   getters: {
     authUser (state) {
       return state.users[state.authId]
+    },
+
+    userPostsCount (state) {
+      return id => countObjectProperties(state.users[id].posts)
+    },
+
+    userThreadsCount (state) {
+      return id => countObjectProperties(state.users[id].threads)
     }
   },
   actions: {
