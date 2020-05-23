@@ -12,8 +12,17 @@
       <p class="desktop-only text-small">{{userPostsCount}} posts</p>
     </div>
     <div class="post-content">
-      <div>
-        {{post.text}}
+      <template v-if="!editing">
+        <div>
+          {{post.text}}
+        </div>
+        <a v-on:click.prevent="editing = true" href="#" style="margin-left: auto;" class="link-unstyled" title="Make a change"><i class="fa fa-pencil"></i></a>
+      </template>
+      <div v-else>
+        <PostEditor
+        v-on:save='editing=false'
+        v-bind:post='post'
+        ></PostEditor>
       </div>
     </div>
     <!--
@@ -25,6 +34,7 @@
 </template>
 
 <script>
+import PostEditor from '@/components/PostEditor'
 import {countObjectProperties} from '@/utils'
 
 export default {
@@ -35,6 +45,11 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      editing: false
+    }
+  },
   computed: {
     user () {
       return this.$store.state.users[this.post.userId]
@@ -42,6 +57,9 @@ export default {
     userPostsCount () {
       return countObjectProperties(this.user.posts)
     }
+  },
+  components: {
+    PostEditor
   }
 }
 </script>

@@ -29,6 +29,14 @@ export default new vuex.Store({
       return Promise.resolve(context.state.posts[postId])
     },
 
+    updatePost (context, {id, newText}) {
+      return new Promise((resolve, reject) => {
+        const post = context.state.posts[id]
+        context.commit('setPost', {post: {...post, text: newText}, postId: id})
+        resolve(post)
+      })
+    },
+
     updateUser (context, userData) {
       context.commit('setUser', {userId: userData['.key'], userData})
     },
