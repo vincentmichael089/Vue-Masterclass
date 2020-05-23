@@ -6,6 +6,16 @@ import {countObjectProperties} from '@/utils'
 
 Vue.use(vuex)
 
+const makeAddChildToParentMutation = function ({child, parent}) {
+  return (state, {childId, parentId}) => {
+    const resource = state[parent][parentId]
+    if (!resource[child]) {
+      Vue.set(resource, child, {})
+    }
+    Vue.set(resource[child], childId, childId)
+  }
+}
+
 export default new vuex.Store({
   state: {
     ...sourceData,
@@ -34,8 +44,8 @@ export default new vuex.Store({
       post.publishedAt = timestamp
 
       context.commit('setPost', {post, postId})
-      context.commit('addPostToThread', {threadId: post.threadId, postId})
-      context.commit('addPostToUser', {postId, userId: post.userId})
+      context.commit('addPostToThread', {parentId: post.threadId, childId: postId})
+      context.commit('addPostToUser', {childId: postId, parentId: post.userId})
       return Promise.resolve(context.state.posts[postId])
     },
 
@@ -74,8 +84,8 @@ export default new vuex.Store({
           publishedAt: timestamp
         }
         context.commit('setThread', {thread, threadId})
-        context.commit('addThreadToForum', {threadId, forumId})
-        context.commit('addThreadToUser', {threadId, userId})
+        context.commit('addThreadToForum', {childId: threadId, parentId: forumId})
+        context.commit('addThreadToUser', {childId: threadId, parentId: userId})
 
         // wait for the createPost  to be done and then get the firstPostId
         // (if not using promise it will not aware of the firstPostId resulting
@@ -112,41 +122,17 @@ export default new vuex.Store({
       Vue.set(state.posts, postId, post)
     },
 
-    addPostToThread (state, {postId, threadId}) {
-      const thread = state.threads[threadId]
-      if (!thread.posts) {
-        Vue.set(thread, 'posts', {})
-      }
-      Vue.set(thread.posts, postId, postId)
-    },
+    addPostToThread: makeAddChildToParentMutation({parent: 'threads', child: 'posts'}),
 
-    addPostToUser (state, {postId, userId}) {
-      const user = state.users[userId]
-      if (!user.posts) {
-        Vue.set(user, 'posts', {})
-      }
-      Vue.set(user.posts, postId, postId)
-    },
+    addPostToUser: makeAddChildToParentMutation({parent: 'users', child: 'posts'}),
 
     setThread (state, {thread, threadId}) {
       Vue.set(state.threads, threadId, thread)
     },
 
-    addThreadToForum (state, {threadId, forumId}) {
-      const forum = state.forums[forumId]
-      if (!forum.threads) {
-        Vue.set(forum, 'threads', {})
-      }
-      Vue.set(forum.threads, threadId, threadId)
-    },
+    addThreadToForum: makeAddChildToParentMutation({parent: 'forums', child: 'threads'}),
 
-    addThreadToUser (state, {threadId, userId}) {
-      const user = state.users[userId]
-      if (!user.threads) {
-        Vue.set(user, 'threads', {})
-      }
-      Vue.set(user.threads, threadId, threadId)
-    },
+    addThreadToUser: makeAddChildToParentMutation({parent: 'users', child: 'threads'}),
 
     setUser (state, {userId, userData}) {
       Vue.set(state.users, userId, userData)
