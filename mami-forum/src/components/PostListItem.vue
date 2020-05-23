@@ -21,6 +21,7 @@
       <div v-else>
         <PostEditor
         v-on:save='editing=false'
+        v-on:cancel='editing = false'
         v-bind:post='post'
         ></PostEditor>
       </div>
