@@ -41,7 +41,7 @@
           <!--<a href="#">Logout</a>-->
         <!--</li>-->
 
-        <li class="navbar-user">
+        <li class="navbar-user" v-if="user">
           <!--
             @router-link
               @binding {route} route navigate to PageProfile
