@@ -126,37 +126,22 @@ export default new vuex.Store({
     },
 
     fetchThread (context, {id}) {
-      return new Promise((resolve, reject) => {
-        firebase.database().ref('threads').child(id).once('value', snapshot => {
-          const threadId = snapshot.key
-          const thread = snapshot.val()
-
-          context.commit('setThread', {thread: {...thread, '.key': threadId}, threadId: threadId})
-          resolve(context.state.threads[id])
-        })
-      })
+      return context.dispatch('fetchItem', {resource: 'threads', id})
     },
 
     fetchPost (context, {id}) {
-      return new Promise((resolve, reject) => {
-        firebase.database().ref('posts').child(id).once('value', snapshot => {
-          const postId = snapshot.key
-          const post = snapshot.val()
-
-          context.commit('setPost', {post: {...post, '.key': postId}, postId})
-          resolve(context.state.posts[id])
-        })
-      })
+      return context.dispatch('fetchItem', {resource: 'posts', id})
     },
 
     fetchUser (context, {id}) {
-      return new Promise((resolve, reject) => {
-        firebase.database().ref('users').child(id).once('value', snapshot => {
-          const userId = snapshot.key
-          const user = snapshot.val()
+      return context.dispatch('fetchItem', {resource: 'users', id})
+    },
 
-          context.commit('setUser', {userId, userData: {...user, '.key': userId}})
-          resolve(context.state.users[id])
+    fetchItem (context, {id, resource}) {
+      return new Promise((resolve, reject) => {
+        firebase.database().ref(resource).child(id).once('value', snapshot => {
+          context.commit('setItem', {resource, id: snapshot.key, item: snapshot.val()})
+          resolve(context.state[resource][id])
         })
       })
     }
@@ -181,6 +166,11 @@ export default new vuex.Store({
 
     setUser (state, {userId, userData}) {
       Vue.set(state.users, userId, userData)
+    },
+
+    setItem (state, {item, id, resource}) {
+      item['.key'] = id
+      Vue.set(state[resource], id, item)
     }
   }
 })
