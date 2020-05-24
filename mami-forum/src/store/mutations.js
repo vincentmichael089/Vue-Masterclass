@@ -27,6 +27,8 @@ export default{
 
   addThreadToUser: makeAddChildToParentMutation({parent: 'users', child: 'threads'}),
 
+  addContributorToThread: makeAddChildToParentMutation({parent: 'threads', child: 'contributors'}),
+
   setUser (state, {userId, userData}) {
     Vue.set(state.users, userId, userData)
   },
