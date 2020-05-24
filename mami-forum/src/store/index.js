@@ -137,6 +137,10 @@ export default new vuex.Store({
       return context.dispatch('fetchItems', {resource: 'posts', ids})
     },
 
+    fetchForums (context, {ids}) {
+      return context.dispatch('fetchItems', {resource: 'forums', ids})
+    },
+
     fetchUser (context, {id}) {
       return context.dispatch('fetchItem', {resource: 'users', id})
     },
@@ -152,8 +156,20 @@ export default new vuex.Store({
 
     fetchItems (context, {ids, resource}) {
       return Promise.all(ids.map(id => context.dispatch('fetchItem', {id, resource})))
-    }
+    },
 
+    fetchAllCategories (context) {
+      return new Promise((resolve, reject) => {
+        firebase.database().ref('categories').once('value', snapshot => {
+          const categoriesObject = snapshot.val()
+          Object.keys(categoriesObject).forEach(categoryId => {
+            const category = categoriesObject[categoryId]
+            context.commit('setItem', {resource: 'categories', id: categoryId, item: category})
+          })
+          resolve(Object.values(context.state.categories))
+        })
+      })
+    }
   },
   mutations: {
     setPost (state, {post, postId}) {
