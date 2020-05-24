@@ -27,17 +27,19 @@ export default {
   updatePost (context, {id, newText}) {
     return new Promise((resolve, reject) => {
       const post = context.state.posts[id]
-      context.commit('setPost', {
-        post: {...post,
-          text: newText,
-          edited: {
-            at: Math.floor(Date.now() / 1000),
-            by: context.state.authId
-          }
-        },
-        postId: id
+      const edited = {
+        at: Math.floor(Date.now() / 1000),
+        by: context.state.authId
+      }
+
+      const updates = {}
+      updates.text = newText
+      updates.edited = edited
+      firebase.database().ref('posts').child(id).update(updates)
+      .then(() => {
+        context.commit('setPost', {post: {...post, text: newText, edited}, postId: id})
+        resolve(post)
       })
-      resolve(post)
     })
   },
 
