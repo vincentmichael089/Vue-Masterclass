@@ -45,30 +45,53 @@ export default {
 
   createThread (context, {title, text, forumId}) {
     return new Promise((resolve, reject) => {
-      const threadId = 'thread' + Date.now() + Math.random()
+      const threadId = firebase.database().ref('threads').push().key
       const timestamp = Math.floor(Date.now() / 1000)
       const userId = context.state.authId
 
+      const postId = firebase.database().ref('posts').push().key
+
       const thread = {
-        '.key': threadId,
+        firstPostId: postId,
         title,
         forumId,
         userId,
-        publishedAt: timestamp
+        publishedAt: timestamp,
+        posts: {}
       }
-      context.commit('setThread', {thread, threadId})
-      context.commit('addThreadToForum', {childId: threadId, parentId: forumId})
-      context.commit('addThreadToUser', {childId: threadId, parentId: userId})
 
-      // wait for the createPost  to be done and then get the firstPostId
-      // (if not using promise it will not aware of the firstPostId resulting
-      // in crash when you create new post and proceed to edit the post)
-      context.dispatch('createPost', {text, threadId})
-        .then(post => {
-          context.commit('setThread', {threadId, thread: {...thread, firstPostId: post['.key']}})
-        })
+      thread.posts[postId] = postId
 
-      resolve(context.state.threads[threadId])
+      const post = {
+        text,
+        publishedAt: timestamp,
+        userId,
+        threadId
+      }
+
+      const updates = {}
+      // thread
+      updates[`threads/${threadId}`] = thread
+      updates[`forums/${forumId}/threads/${threadId}`] = threadId
+      updates[`users/${userId}/threads/${threadId}`] = threadId
+
+      updates[`posts/${postId}`] = post
+      updates[`users/${post.userId}/posts/${postId}`] = postId
+
+      firebase.database().ref().update(updates)
+      .then(() => {
+        // update thread
+        context.commit('setItem', {resource: 'threads', item: thread, id: threadId})
+        context.commit('addThreadToForum', {childId: threadId, parentId: forumId})
+        context.commit('addThreadToUser', {childId: threadId, parentId: userId})
+
+        // update post
+        context.commit('setItem', {resource: 'posts', item: post, id: postId})
+        context.commit('addPostToThread', {parentId: post.threadId, childId: postId})
+        context.commit('addPostToUser', {childId: postId, parentId: post.userId})
+
+        resolve(context.state.threads[threadId])
+      })
     })
   },
 
