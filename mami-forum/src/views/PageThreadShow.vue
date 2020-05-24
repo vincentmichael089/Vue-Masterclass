@@ -71,14 +71,14 @@ export default {
   },
   created () {
     this.$store.dispatch('fetchThread', {id: this.id})
-    .then(thread => {
-      Object.keys(thread.posts).forEach(postId => {
-        this.$store.dispatch('fetchPost', {id: postId})
-        .then(post => {
-          this.$store.dispatch('fetchUser', {id: post.userId})
+      .then(thread => {
+        this.$store.dispatch('fetchPosts', {ids: Object.keys(thread.posts)})
+        .then(posts => {
+          posts.forEach(post => {
+            this.$store.dispatch('fetchUser', {id: post.userId})
+          })
         })
       })
-    })
   }
 }
 </script>

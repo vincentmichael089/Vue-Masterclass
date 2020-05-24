@@ -133,6 +133,10 @@ export default new vuex.Store({
       return context.dispatch('fetchItem', {resource: 'posts', id})
     },
 
+    fetchPosts (context, {ids}) {
+      return context.dispatch('fetchItems', {resource: 'posts', ids})
+    },
+
     fetchUser (context, {id}) {
       return context.dispatch('fetchItem', {resource: 'users', id})
     },
@@ -144,6 +148,10 @@ export default new vuex.Store({
           resolve(context.state[resource][id])
         })
       })
+    },
+
+    fetchItems (context, {ids, resource}) {
+      return Promise.all(ids.map(id => context.dispatch('fetchItem', {id, resource})))
     }
 
   },
