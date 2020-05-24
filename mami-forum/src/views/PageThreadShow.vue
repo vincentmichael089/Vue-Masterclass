@@ -70,32 +70,12 @@ export default {
     }
   },
   created () {
-    // fetch thread
-    firebase.database().ref('threads').child(this.id).once('value', snapshot => {
-      const thread = snapshot.val()
-      const threadId = snapshot.key
-      this.$store.commit('setThread', {thread: {...thread, '.key': threadId}, threadId: threadId})
-
-      // // fetch posts user (this is comented because the fetch user below also fetch the same data)
-      // firebase.database().ref('users').child(thread.userId).once('value', snapshot => {
-      //   const user = snapshot.val()
-      //   const userId = snapshot.key
-      //   this.$store.commit('setUser', {userId, userData: {...user, '.key': userId}})
-      // })
-
-      // fetch post
+    this.$store.dispatch('fetchThread', {id: this.id})
+    .then(thread => {
       Object.keys(thread.posts).forEach(postId => {
-        firebase.database().ref('posts').child(postId).once('value', snapshot => {
-          const post = snapshot.val()
-          const postId = snapshot.key
-          this.$store.commit('setPost', {post: {...post, '.key': postId}, postId})
-
-          // fetch posts user
-          firebase.database().ref('users').child(post.userId).once('value', snapshot => {
-            const user = snapshot.val()
-            const userId = snapshot.key
-            this.$store.commit('setUser', {userId, userData: {...user, '.key': userId}})
-          })
+        this.$store.dispatch('fetchPost', {id: postId})
+        .then(post => {
+          this.$store.dispatch('fetchUser', {id: post.userId})
         })
       })
     })

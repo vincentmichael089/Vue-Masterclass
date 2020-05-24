@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import vuex from 'vuex'
 
+import firebase from 'firebase'
 import {countObjectProperties} from '@/utils'
 
 Vue.use(vuex)
@@ -122,7 +123,44 @@ export default new vuex.Store({
             resolve(newThread)
           })
       })
+    },
+
+    fetchThread (context, {id}) {
+      return new Promise((resolve, reject) => {
+        firebase.database().ref('threads').child(id).once('value', snapshot => {
+          const threadId = snapshot.key
+          const thread = snapshot.val()
+
+          context.commit('setThread', {thread: {...thread, '.key': threadId}, threadId: threadId})
+          resolve(context.state.threads[id])
+        })
+      })
+    },
+
+    fetchPost (context, {id}) {
+      return new Promise((resolve, reject) => {
+        firebase.database().ref('posts').child(id).once('value', snapshot => {
+          const postId = snapshot.key
+          const post = snapshot.val()
+
+          context.commit('setPost', {post: {...post, '.key': postId}, postId})
+          resolve(context.state.posts[id])
+        })
+      })
+    },
+
+    fetchUser (context, {id}) {
+      return new Promise((resolve, reject) => {
+        firebase.database().ref('users').child(id).once('value', snapshot => {
+          const userId = snapshot.key
+          const user = snapshot.val()
+
+          context.commit('setUser', {userId, userData: {...user, '.key': userId}})
+          resolve(context.state.users[id])
+        })
+      })
     }
+
   },
   mutations: {
     setPost (state, {post, postId}) {
