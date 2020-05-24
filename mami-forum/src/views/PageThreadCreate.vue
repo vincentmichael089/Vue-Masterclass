@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div class="col-full push-top" v-if="forum">
     <!--
       save event triggered on emitted event
       @event save
@@ -44,6 +44,9 @@ export default {
     forum () {
       return this.$store.state.forums[this.forumId]
     }
+  },
+  created () {
+    this.$store.dispatch('fetchForum', {id: this.forumId})
   }
 }
 </script>

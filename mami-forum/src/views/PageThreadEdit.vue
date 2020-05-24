@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">\
+  <div class="col-full push-top" v-if="thread && text">\
     <h1>You are editing <i>{{thread.name}}</i></h1>
     <!--
       save event triggered on emitted event
@@ -52,8 +52,15 @@ export default {
     },
     text () {
       // firstPostId is the first post or the beginning of the thread, so editing it means editing the thread post
-      return this.$store.state.posts[this.thread.firstPostId].text
+      const post = this.$store.state.posts[this.thread.firstPostId]
+      return post ? post.text : null
     }
+  },
+  created () {
+    this.$store.dispatch('fetchThread', {id: this.id})
+    .then(thread => {
+      this.$store.dispatch('fetchPost', {id: thread.firstPostId})
+    })
   }
 }
 </script>

@@ -125,8 +125,20 @@ export default new vuex.Store({
       })
     },
 
+    fetchCategory (context, {id}) {
+      return context.dispatch('fetchItem', {resource: 'categories', id})
+    },
+
+    fetchCategories (context, {ids}) {
+      return context.dispatch('fetchItems', {resource: 'categories', ids})
+    },
+
     fetchThread (context, {id}) {
       return context.dispatch('fetchItem', {resource: 'threads', id})
+    },
+
+    fetchThreads (context, {ids}) {
+      return context.dispatch('fetchItems', {resource: 'threads', ids})
     },
 
     fetchPost (context, {id}) {
@@ -137,12 +149,20 @@ export default new vuex.Store({
       return context.dispatch('fetchItems', {resource: 'posts', ids})
     },
 
+    fetchForum (context, {id}) {
+      return context.dispatch('fetchItem', {resource: 'forums', id})
+    },
+
     fetchForums (context, {ids}) {
       return context.dispatch('fetchItems', {resource: 'forums', ids})
     },
 
     fetchUser (context, {id}) {
       return context.dispatch('fetchItem', {resource: 'users', id})
+    },
+
+    fetchUsers (context, {ids}) {
+      return context.dispatch('fetchItems', {resource: 'users', ids})
     },
 
     fetchItem (context, {id, resource}) {
@@ -155,6 +175,7 @@ export default new vuex.Store({
     },
 
     fetchItems (context, {ids, resource}) {
+      ids = Array.isArray(ids) ? ids : Object.keys(ids)
       return Promise.all(ids.map(id => context.dispatch('fetchItem', {id, resource})))
     },
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full">
+  <div class="col-full" v-if="category">
     <h1>{{ category.name }}</h1>
     <CategoryListItem v-bind:category="category"/>
   </div>
@@ -23,6 +23,12 @@ export default {
     category () {
       return this.$store.state.categories[this.id]
     }
+  },
+  created () {
+    this.$store.dispatch('fetchCategory', {id: this.id})
+    .then(category => {
+      this.$store.dispatch('fetchForums', {ids: category.forums})
+    })
   }
 }
 </script>
