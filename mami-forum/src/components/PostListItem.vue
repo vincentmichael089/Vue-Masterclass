@@ -1,5 +1,5 @@
 <template>
-    <div class="post">
+    <div class="post" v-if="post && user"><!--v-if added so the template aware if data is fetched from firebase-->
     <div class="user-info">
       <a href="#" class="user-name">{{user.name}}</a>
       <a href="#">
