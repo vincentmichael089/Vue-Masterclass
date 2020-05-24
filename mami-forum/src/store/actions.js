@@ -104,16 +104,27 @@ export default {
       const thread = context.state.threads[id]
       // const post = context.state.posts[thread.firstPostId]
 
+      const post = context.state.posts[thread.firstPostId]
+
       const newThread = {...thread, title}
       // const newPost = {...post, text}
 
-      context.commit('setThread', {thread: newThread, threadId: id})
-      // context.commit('setPost', {post: newPost, postId: thread.firstPostId})
+      const edited = {
+        at: Math.floor(Date.now() / 1000),
+        by: context.state.authId
+      }
 
-      context.dispatch('updatePost', {id: thread.firstPostId, newText: text})
-        .then(() => {
-          resolve(newThread)
-        })
+      const updates = {}
+      updates[`posts/${thread.firstPostId}/text`] = text
+      updates[`posts/${thread.firstPostId}/edited`] = edited
+      updates[`threads/${id}/title`] = title
+
+      firebase.database().ref().update(updates)
+      .then(() => {
+        context.commit('setThread', {thread: newThread, threadId: id})
+        context.commit('setPost', {post: {...post, text, edited}, postId: thread.firstPostId})
+        resolve(post)
+      })
     })
   },
 
