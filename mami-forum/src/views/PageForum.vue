@@ -1,5 +1,5 @@
 <template>
-  <div class="forum-wrapper" v-if="forum">
+  <div class="forum-wrapper" v-if="asyncDataStatus_ready">
     <div class="col-full push-top">
       <div class="forum-header">
         <div class="forum-details">
@@ -23,6 +23,7 @@
 
 <script>
     import ThreadList from '@/components/ThreadList'
+    import asyncDataStatus from '@/mixins/asyncDataStatus'
 
     export default {
       components: {
@@ -34,6 +35,7 @@
           required: true
         }
       },
+      mixins: [asyncDataStatus],
       computed: {
         forum () {
           return this.$store.state.forums[this.id]
@@ -45,14 +47,11 @@
       },
       created () {
         this.$store.dispatch('fetchForum', {id: this.id})
-        .then(forum => {
-          this.$store.dispatch('fetchThreads', {ids: forum.threads})
-          .then(threads => {
-            threads.forEach(thread => {
-              this.$store.dispatch('fetchUser', {id: thread.userId})
-            })
-          })
-        })
+        .then(forum => this.$store.dispatch('fetchThreads', {ids: forum.threads}))
+        .then(threads => Promise.all(
+          threads.map(thread => this.$store.dispatch('fetchUser', {id: thread.userId}))
+        ))
+        .then(() => this.asyncDataStatus_fetched())
       }
     }
 </script>

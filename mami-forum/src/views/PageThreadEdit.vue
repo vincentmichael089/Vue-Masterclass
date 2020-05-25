@@ -1,6 +1,6 @@
 <template>
-  <div class="col-full push-top" v-if="thread && text">\
-    <h1>You are editing <i>{{thread.name}}</i></h1>
+  <div class="col-full push-top" v-if="asyncDataStatus_ready">
+    <h1>You are editing <i>{{thread.title}}</i></h1>
     <!--
       save event triggered on emitted event
       @event save
@@ -23,6 +23,7 @@
 
 <script>
 import ThreadEditor from '@/components/ThreadEditor'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
   components: {
@@ -34,6 +35,7 @@ export default {
       required: true
     }
   },
+  mixins: [asyncDataStatus],
   methods: {
     save ({title, text}) {
       this.$store.dispatch('updateThread', {
@@ -58,9 +60,8 @@ export default {
   },
   created () {
     this.$store.dispatch('fetchThread', {id: this.id})
-    .then(thread => {
-      this.$store.dispatch('fetchPost', {id: thread.firstPostId})
-    })
+    .then(thread => this.$store.dispatch('fetchPost', {id: thread.firstPostId}))
+    .then(() => this.asyncDataStatus_fetched())
   }
 }
 </script>

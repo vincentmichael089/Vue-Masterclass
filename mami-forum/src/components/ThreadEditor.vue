@@ -42,8 +42,8 @@ export default {
   data () {
     return {
       form: {
-        text: this.title,
-        title: this.text
+        text: this.text,
+        title: this.title
       }
     }
   },

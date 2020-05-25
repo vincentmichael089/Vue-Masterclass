@@ -1,5 +1,5 @@
 <template>
-   <div class="col-large push-top" v-if="thread && creator"> <!--v-if added so the template aware if data is fetched from firebase-->
+   <div class="col-large push-top" v-if="asyncDataStatus_ready"> <!--v-if added so the template aware if data is fetched from firebase-->
     <h1>{{thread.title}}</h1>
      <router-link
         v-bind:to="{name: 'PageThreadEdit', id: this.id}"
@@ -35,6 +35,7 @@
 
 <script>
 import firebase from 'firebase'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
@@ -51,6 +52,7 @@ export default {
     PostList,
     PostEditor
   },
+  mixins: [asyncDataStatus],
   computed: {
     thread () {
       return this.$store.state.threads[this.id]
@@ -71,14 +73,11 @@ export default {
   },
   created () {
     this.$store.dispatch('fetchThread', {id: this.id})
-      .then(thread => {
-        this.$store.dispatch('fetchPosts', {ids: Object.keys(thread.posts)})
-        .then(posts => {
-          posts.forEach(post => {
-            this.$store.dispatch('fetchUser', {id: post.userId})
-          })
-        })
-      })
+    .then(thread => this.$store.dispatch('fetchPosts', {ids: Object.keys(thread.posts)}))
+    .then(posts => Promise.all(
+      posts.map(post => this.$store.dispatch('fetchUser', {id: post.userId}))
+    ))
+    .then(() => this.asyncDataStatus_fetched())
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top" v-if="ready">
+  <div class="col-full push-top" v-if="asyncDataStatus_ready">
     <h1>Welcome to Mami-forum!</h1>
     <!--
       @CategoryList
@@ -12,6 +12,7 @@
 
 <script>
 import CategoryList from '@/components/CategoryList.vue'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
   name: 'PageHome',
@@ -24,11 +25,7 @@ export default {
     CategoryList
   },
 
-  data () {
-    return {
-      ready: false
-    }
-  },
+  mixins: [asyncDataStatus],
 
   beforeCreate () {
     this.$store.dispatch('fetchAllCategories')
@@ -37,7 +34,7 @@ export default {
           this.$store.dispatch('fetchForums', {ids: Object.keys(category.forums)})
         }))
       })
-      .then(() => { this.ready = true })
+      .then(() => { this.asyncDataStatus_fetched() })
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top" v-if="forum">
+  <div class="col-full push-top" v-if="asyncDataStatus_ready">
     <!--
       save event triggered on emitted event
       @event save
@@ -17,6 +17,7 @@
 
 <script>
 import ThreadEditor from '@/components/ThreadEditor'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
   components: {
@@ -28,6 +29,7 @@ export default {
       required: true
     }
   },
+  mixins: [asyncDataStatus],
   methods: {
     save ({title, text}) {
       this.$store.dispatch('createThread', {
@@ -47,6 +49,7 @@ export default {
   },
   created () {
     this.$store.dispatch('fetchForum', {id: this.forumId})
+    .then(() => this.asyncDataStatus_fetched())
   }
 }
 </script>

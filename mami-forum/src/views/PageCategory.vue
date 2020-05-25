@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full" v-if="category">
+  <div class="col-full" v-if="asyncDataStatus_ready">
     <h1>{{ category.name }}</h1>
     <CategoryListItem v-bind:category="category"/>
   </div>
@@ -7,6 +7,7 @@
 
 <script>
 import CategoryListItem from '@/components/CategoryListItem'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
   name: 'PageCategory',
@@ -19,6 +20,7 @@ export default {
       required: true
     }
   },
+  mixins: [asyncDataStatus],
   computed: {
     category () {
       return this.$store.state.categories[this.id]
@@ -29,6 +31,7 @@ export default {
     .then(category => {
       this.$store.dispatch('fetchForums', {ids: category.forums})
     })
+    .then(() => this.asyncDataStatus_fetched())
   }
 }
 </script>
