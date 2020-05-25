@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div class="col-full push-top" v-if="ready">
     <h1>Welcome to Mami-forum!</h1>
     <!--
       @CategoryList
@@ -24,13 +24,20 @@ export default {
     CategoryList
   },
 
+  data () {
+    return {
+      ready: false
+    }
+  },
+
   beforeCreate () {
     this.$store.dispatch('fetchAllCategories')
       .then(categories => {
-        categories.forEach(category => {
+        Promise.all(categories.map(category => {
           this.$store.dispatch('fetchForums', {ids: Object.keys(category.forums)})
-        })
+        }))
       })
+      .then(() => { this.ready = true })
   }
 }
 </script>
