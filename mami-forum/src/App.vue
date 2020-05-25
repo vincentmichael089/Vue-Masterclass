@@ -11,6 +11,7 @@
 <script>
 import TheNavbar from '@/components/TheNavbar'
 import AppSpinner from '@/components/AppSpinner'
+import NProgress from 'nprogress'
 
 export default {
   name: 'app',
@@ -25,12 +26,24 @@ export default {
   },
   methods: {
     toggleShowPage () {
-      this.showPage = !this.showPage
+      this.showPage = true
+      NProgress.done()
     }
   },
   created () {
+    NProgress.configure({
+      speed: 200,
+      showSpinner: false
+    })
+    // start when reloaded
+    NProgress.start()
+
     this.$router.beforeEach((to, from, next) => {
-      this.toggleShowPage()
+      this.showPage = false
+
+      // start when visiting page
+      NProgress.start()
+
       next()
     })
   }
@@ -39,4 +52,9 @@ export default {
 
 <style>
 @import 'assets/css/style.css';
+@import '~nprogress/nprogress.css';
+
+#nprogress .bar {
+  background: #57AD8D;
+}
 </style>
