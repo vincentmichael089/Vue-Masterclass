@@ -1,6 +1,22 @@
 import firebase from 'firebase'
 
 export default {
+  createUser (context, {email, name, username, avatar = null}) {
+    return new Promise((resolve, reject) => {
+      const timestamp = Math.floor(Date.now() / 1000)
+      const usernameLower = username.toLowerCase()
+      email = email.toLowerCase()
+      const user = {avatar, email, name, username, usernameLower, RegisteredAt: timestamp}
+
+      const userId = firebase.database().ref('users').push().key
+      firebase.database().ref('users').child(userId).set(user)
+      .then(() => {
+        context.commit('setItem', {item: user, id: userId, resource: 'users'})
+        resolve(context.state.users[userId])
+      })
+    })
+  },
+
   createPost (context, post) {
     const postId = firebase.database().ref('posts').push().key
     const timestamp = Math.floor(Date.now() / 1000)
