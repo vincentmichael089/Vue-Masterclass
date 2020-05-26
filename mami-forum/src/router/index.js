@@ -8,6 +8,7 @@ import PageThreadEdit from '@/views/PageThreadEdit'
 import PageNotFound from '@/views/PageNotFound'
 import PageCategory from '@/views/PageCategory'
 import PageProfile from '@/views/PageProfile'
+import PageRegister from '@/views/PageRegister'
 
 Vue.use(Router)
 
@@ -60,6 +61,11 @@ export default new Router({
       name: 'PageProfileEdit',
       component: PageProfile,
       props: {edit: true}
+    },
+    {
+      path: '/register',
+      name: 'PageRegister',
+      component: PageRegister
     },
     {
       path: '*',
