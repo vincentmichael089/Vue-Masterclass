@@ -23,38 +23,43 @@
       <ul v-if="user">
         <li class="navbar-user">
           <!--
-            @router-link
-              @binding {route} route navigate to PageProfile
+            dropdown toggle triggered on click event
+            @event click
           -->
-          <router-link v-bind:to="{name: 'PageProfile'}">
+          <a v-on:click.prevent="userDropdownOpen = !userDropdownOpen">
             <!--
               @img
                 @binding {string} src src of avatar
             -->
             <img class="avatar-small" v-bind:src="user.avatar"
                  alt="">
-            <span>
+            <span> 
                 {{user.name}}
                 <img class="icon-profile" src="../assets/img/arrow-profile.svg" alt="">
             </span>
-          </router-link>
+          </a>
 
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
-          <div id="user-dropdown">
+          <div id="user-dropdown" v-bind:class="{'active-drop': userDropdownOpen}">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
-              <li class="dropdown-menu-item"><a href="profile.html">View profile</a></li>
-              <li class="dropdown-menu-item"><a href="#">Log out</a></li>
+              <li class="dropdown-menu-item">
+                <!--
+                  @router-link
+                    @binding {route} route navigate to PageProfile
+                -->
+                <router-link v-bind:to="{name: 'PageProfile'}">View Profile</router-link>
+              </li>
+              <li class="dropdown-menu-item">
+                <!--
+                  signOut event triggered on click event
+                  @event click
+                -->
+                <a v-on:click.prevent="$store.dispatch('signOut')">Sign Out</a>
+              </li>
             </ul>
           </div>
-        </li>
-        <li class="navbar-item">
-          <!--
-            signOut event triggered on click event
-            @event click
-          -->
-          <a v-on:click.prevent="$store.dispatch('signOut')">Sign Out</a>
         </li>
       </ul>
       <ul v-else>
@@ -77,6 +82,12 @@
   import {mapGetters} from 'vuex'
 
   export default {
+    data () {
+      return {
+        userDropdownOpen: false
+      }
+    },
+
     computed: {
       ...mapGetters({
         'user': 'authUser'
