@@ -9,6 +9,7 @@ import PageNotFound from '@/views/PageNotFound'
 import PageCategory from '@/views/PageCategory'
 import PageProfile from '@/views/PageProfile'
 import PageRegister from '@/views/PageRegister'
+import PageSignIn from '@/views/PageSignIn'
 
 Vue.use(Router)
 
@@ -66,6 +67,11 @@ export default new Router({
       path: '/register',
       name: 'PageRegister',
       component: PageRegister
+    },
+    {
+      path: '/signin',
+      name: 'PageSignIn',
+      component: PageSignIn
     },
     {
       path: '*',

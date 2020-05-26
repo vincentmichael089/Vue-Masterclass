@@ -23,6 +23,17 @@ export default {
     })
   },
 
+  signInWithEmailAndPassword (context, {email, password}) {
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+  },
+
+  signOut (context) {
+    return firebase.auth().signOut()
+    .then(() => {
+      context.commit('setAuthId', null)
+    })
+  },
+
   fetchAuthUser (context) {
     const userId = firebase.auth().currentUser.uid // get the current userId
     return context.dispatch('fetchUser', {id: userId}) // fetch the current user data
