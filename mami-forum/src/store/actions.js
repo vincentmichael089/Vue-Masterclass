@@ -23,6 +23,14 @@ export default {
     })
   },
 
+  fetchAuthUser (context) {
+    const userId = firebase.auth().currentUser.uid // get the current userId
+    return context.dispatch('fetchUser', {id: userId}) // fetch the current user data
+    .then(() => {
+      context.commit('setAuthId', userId) // set the state authId to userId
+    })
+  },
+
   createPost (context, post) {
     const postId = firebase.database().ref('posts').push().key
     const timestamp = Math.floor(Date.now() / 1000)
