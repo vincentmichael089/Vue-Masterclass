@@ -1,19 +1,25 @@
 import firebase from 'firebase'
 
 export default {
-  createUser (context, {email, name, username, avatar = null}) {
+  createUser (context, {id, email, name, username, avatar = null}) {
     return new Promise((resolve, reject) => {
       const timestamp = Math.floor(Date.now() / 1000)
       const usernameLower = username.toLowerCase()
       email = email.toLowerCase()
-      const user = {avatar, email, name, username, usernameLower, RegisteredAt: timestamp}
+      const user = {avatar, email, name, username, usernameLower, registeredAt: timestamp}
 
-      const userId = firebase.database().ref('users').push().key
-      firebase.database().ref('users').child(userId).set(user)
+      firebase.database().ref('users').child(id).set(user)
       .then(() => {
-        context.commit('setItem', {item: user, id: userId, resource: 'users'})
-        resolve(context.state.users[userId])
+        context.commit('setItem', {item: user, id: id, resource: 'users'})
+        resolve(context.state.users[id])
       })
+    })
+  },
+
+  registerUserWithEmailAndPassword (context, {email, name, username, password, avatar = null}) {
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      return context.dispatch('createUser', {id: userCredential.user.uid, email, name, username, avatar})
     })
   },
 
