@@ -21,10 +21,31 @@ export default {
     .then(userCredential => {
       return context.dispatch('createUser', {id: userCredential.user.uid, email, name, username, avatar})
     })
+    .then(() => context.dispatch('fetchAuthUser'))
   },
 
   signInWithEmailAndPassword (context, {email, password}) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
+  },
+
+  signInWithGoogle (context) {
+    const provider = new firebase.auth.GoogleAuthProvider()
+    return firebase.auth().signInWithPopup(provider)
+      .then(data => {
+        const user = data.user
+        firebase.database().ref('users').child(user.uid).once('value', snapshot => {
+          if (!snapshot.exists()) { // if user isnt registered
+            return context.dispatch('createUser', {
+              id: user.uid,
+              name: user.displayName,
+              email: user.email,
+              username: user.email,
+              avatar: user.photoURL
+            })
+            .then(() => context.dispatch('fetchAuthUser'))
+          }
+        })
+      })
   },
 
   signOut (context) {
@@ -36,9 +57,19 @@ export default {
 
   fetchAuthUser (context) {
     const userId = firebase.auth().currentUser.uid // get the current userId
-    return context.dispatch('fetchUser', {id: userId}) // fetch the current user data
-    .then(() => {
-      context.commit('setAuthId', userId) // set the state authId to userId
+
+    return new Promise((resolve, reject) => {
+      firebase.database().ref('users').child(userId).once('value', snapshot => {
+        if (snapshot.exists()) { // check if user exists in the database
+          return context.dispatch('fetchUser', {id: userId}) // fetch the current user data
+            .then(user => {
+              context.commit('setAuthId', userId) // set the state authId to userId
+              resolve(user)
+            })
+        } else {
+          resolve(null)
+        }
+      })
     })
   },
 
