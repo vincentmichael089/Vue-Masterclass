@@ -2,7 +2,13 @@
   <div id="app">
     <TheNavbar/>
     <div class="container">
-      <router-view v-show="showPage" v-on:ready="toggleShowPage"/>
+      <!--
+        @router-view
+          @binding {string} key route.path make sure that element will be loaded when moving using the same components
+          i.e page profile and page profile share the same components, thus it will break if we navigate between them
+          without assigning unique keys
+      -->
+      <router-view v-show="showPage" v-on:ready="toggleShowPage" v-bind:key='$route.path'/>
       <AppSpinner v-show="!showPage"/>
     </div>
   </div>
