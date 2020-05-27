@@ -1,4 +1,5 @@
 import firebase from 'firebase'
+import {removeEmptyProperties} from '@/utils'
 
 export default {
 
@@ -136,7 +137,23 @@ export default {
   },
 
   updateUser (context, userData) {
-    context.commit('setUser', {userId: userData['.key'], userData})
+    const updates = {
+      avatar: userData.avatar,
+      username: userData.username,
+      name: userData.name,
+      bio: userData.bio,
+      website: userData.website,
+      email: userData.email,
+      location: userData.location
+    }
+
+    return new Promise((resolve, reject) => {
+      firebase.database().ref('users').child(userData['.key']).update(removeEmptyProperties(updates))
+      .then(() => {
+        context.commit('setUser', {userId: userData['.key'], userData})
+        resolve(userData)
+      })
+    })
   },
 
   createThread (context, {title, text, forumId}) {
