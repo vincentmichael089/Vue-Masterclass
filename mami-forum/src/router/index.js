@@ -92,15 +92,19 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(route => route.meta.requiresAuth)) { // if the routes has meta of requiresAuth
-    if (store.state.authId) {
+  store.dispatch('initAuthentication')
+  .then(user => {
+    if (to.matched.some(route => route.meta.requiresAuth)) { // if the routes has meta of requiresAuth
+      // protected route
+      if (user) {
+        next()
+      } else {
+        next({name: 'PageHome'})
+      }
+    } else { // if the routes doesnt require meta of requiresAuth, just navigate
       next()
-    } else {
-      next({name: 'PageHome'})
     }
-  } else { // if the routes doesnt require meta of requiresAuth, just navigate
-    next()
-  }
+  })
 })
 
 export default router

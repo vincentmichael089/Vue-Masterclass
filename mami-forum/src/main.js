@@ -26,13 +26,6 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
 
-// keep the auth logged in even when page is refreshed
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    store.dispatch('fetchAuthUser')
-  }
-})
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

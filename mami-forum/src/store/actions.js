@@ -1,6 +1,27 @@
 import firebase from 'firebase'
 
 export default {
+
+  initAuthentication (context) {
+    return new Promise((resolve, reject) => {
+      // unsubscribe observer if already listening
+      if (context.state.unsubscribeAuthObserver) {
+        context.state.unsubscribeAuthObserver()
+      }
+
+      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          context.dispatch('fetchAuthUser')
+          .then(dbUser => resolve(dbUser))
+        } else {
+          resolve(null)
+        }
+      })
+
+      context.commit('setUnsubscribeAuthObserver', unsubscribe)
+    })
+  },
+
   createUser (context, {id, email, name, username, avatar = null}) {
     return new Promise((resolve, reject) => {
       const timestamp = Math.floor(Date.now() / 1000)
