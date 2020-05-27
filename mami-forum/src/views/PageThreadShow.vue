@@ -29,14 +29,23 @@
         @binding {string} threadId id of the thread
     --> 
     <PostEditor 
-    v-bind:threadId="id"/>
+      v-if="authUser"
+      v-bind:threadId="id"/>
+    <div v-else class="text-center" style="margin-bottom: 50px;">
+        <!--
+          @router-link
+            @binding {Object} to navigating to page or redirect to path
+        --> 
+      <router-link v-bind:to="{name: 'PageSignIn', query: {redirectTo: $route.path}}">Sign in</router-link> or
+      <router-link v-bind:to="{name: 'PageRegister', query: {redirectTo: $route.path}}">Register</router-link> to post a reply.
+    </div>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase'
 import asyncDataStatus from '@/mixins/asyncDataStatus'
-
+import {mapGetters} from 'vuex'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
 import {countObjectProperties} from '@/utils'
@@ -54,6 +63,9 @@ export default {
   },
   mixins: [asyncDataStatus],
   computed: {
+    ...mapGetters({
+      authUser: 'authUser'
+    }),
     thread () {
       return this.$store.state.threads[this.id]
     },

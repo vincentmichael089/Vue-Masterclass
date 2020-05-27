@@ -69,7 +69,7 @@ export default {
     successRedirect () {
       // redirect to redirect path or go to home if there isnt redirect path. notice it use route and not router
       const redirectTo = this.$route.query.redirectTo || {name: 'PageHome'}
-      this.$$router.push(redirectTo)
+      this.$router.push(redirectTo)
     }
   },
 
