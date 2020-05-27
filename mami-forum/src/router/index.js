@@ -105,7 +105,7 @@ router.beforeEach((to, from, next) => {
       if (user) {
         next()
       } else {
-        next({name: 'PageSignIn'}) // redirect to sign in page when user tries to do auth required access
+        next({name: 'PageSignIn', query: {redirectTo: to.path}}) // redirect to sign in page when user tries to do auth required access
       }
     } else if (to.matched.some(route => route.meta.requiresGuest)) { // if the routes has meta of requiresGuest
       // protected route
