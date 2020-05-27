@@ -14,7 +14,7 @@ import PageSignIn from '@/views/PageSignIn'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -56,7 +56,8 @@ export default new Router({
       path: '/profile',
       name: 'PageProfile',
       component: PageProfile,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/profile/edit',
@@ -89,3 +90,17 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(route => route.meta.requiresAuth)) { // if the routes has meta of requiresAuth
+    if (store.state.authId) {
+      next()
+    } else {
+      next({name: 'PageHome'})
+    }
+  } else { // if the routes doesnt require meta of requiresAuth, just navigate
+    next()
+  }
+})
+
+export default router

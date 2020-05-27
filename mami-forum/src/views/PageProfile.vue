@@ -51,7 +51,6 @@ import UserProfileCard from '@/components/UserProfileCard'
 import UserProfileCardEditor from '@/components/UserProfileCardEditor'
 import {mapGetters} from 'vuex'
 import {countObjectProperties} from '@/utils'
-import store from '@/store'
 
 export default {
   components: {
@@ -85,14 +84,6 @@ export default {
 
   created () {
     this.$emit('ready')
-  },
-
-  beforeRouteEnter (to, from, next) { // to home redirect when isnt signed in
-    if (store.state.authId) {
-      next()
-    } else {
-      next({name: 'PageHome'})
-    }
   }
 }
 </script>
