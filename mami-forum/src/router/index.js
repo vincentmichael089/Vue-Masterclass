@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store'
 import PageHome from '@/views/PageHome'
 import PageForum from '@/views/PageForum'
 import PageThreadShow from '@/views/PageThreadShow'
@@ -72,6 +73,14 @@ export default new Router({
       path: '/signin',
       name: 'PageSignIn',
       component: PageSignIn
+    },
+    {
+      path: '/signout',
+      name: 'PageSignOut',
+      beforeEnter (to, from, next) {
+        store.dispatch('signOut') // dont use this.store because signOut is global scope
+        .then(() => next({name: 'PageHome'}))
+      }
     },
     {
       path: '*',
