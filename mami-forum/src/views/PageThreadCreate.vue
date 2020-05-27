@@ -9,10 +9,12 @@
     -->
     <h1>Create new thread in <i>{{forum.name}}</i></h1>
     <ThreadEditor
+    ref="editor"
     v-on:save='save'
     v-on:cancel='cancel'
     />
   </div>
+   <!-- ref is used to get what state of title and text in ThreadEditor since this parent doesn know anything about  it-->
 </template>
 
 <script>
@@ -36,20 +38,48 @@ export default {
         forumId: this.forum['.key'],
         title,
         text
-      }).then(thread => this.$router.push({name: 'PageThreadShow', params: {id: thread['.key']}}))
+      }).then(thread => {
+        this.saved = true
+        this.$router.push({name: 'PageThreadShow', params: {id: thread['.key']}})
+      })
     },
     cancel () {
       this.$router.push({name: 'PageForum', params: {id: this.forum['.key']}})
     }
   },
+  data () {
+    return {
+      saved: false
+    }
+  },
+
   computed: {
     forum () {
       return this.$store.state.forums[this.forumId]
+    },
+
+    hasUnsavedChages () {
+      // the editor has title and text but not saved yet,
+      // this computed property make sure that window.confirm wont called when user click publish button
+      return (this.$refs.editor.form.title || this.$refs.editor.form.text) && !this.saved
     }
   },
   created () {
     this.$store.dispatch('fetchForum', {id: this.forumId})
     .then(() => this.asyncDataStatus_fetched())
+  },
+
+  beforeRouteLeave (to, from, next) {
+    if (this.hasUnsavedChages) { // access child state with editor refs
+      const confirmed = window.confirm('Are you sure? any changes will be discarded')
+      if (confirmed) {
+        next()
+      } else {
+        next(false)
+      }
+    } else {
+      next()
+    }
   }
 }
 </script>
