@@ -26,7 +26,8 @@ const router = new Router({
       path: '/thread/create/:forumId',
       name: 'PageThreadCreate',
       component: PageThreadCreate,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/thread/:id',
@@ -38,7 +39,8 @@ const router = new Router({
       path: '/thread/:id/edit',
       name: 'PageThreadEdit',
       component: PageThreadEdit,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/forum/:id',
@@ -63,21 +65,25 @@ const router = new Router({
       path: '/profile/edit',
       name: 'PageProfileEdit',
       component: PageProfile,
-      props: {edit: true}
+      props: {edit: true},
+      meta: { requiresAuth: true }
     },
     {
       path: '/register',
       name: 'PageRegister',
-      component: PageRegister
+      component: PageRegister,
+      meta: { requiresGuest: true }
     },
     {
       path: '/signin',
       name: 'PageSignIn',
-      component: PageSignIn
+      component: PageSignIn,
+      meta: { requiresGuest: true }
     },
     {
       path: '/signout',
       name: 'PageSignOut',
+      meta: { requiresAuth: true },
       beforeEnter (to, from, next) {
         store.dispatch('signOut') // dont use this.store because signOut is global scope
         .then(() => next({name: 'PageHome'}))
@@ -99,7 +105,14 @@ router.beforeEach((to, from, next) => {
       if (user) {
         next()
       } else {
-        next({name: 'PageHome'})
+        next({name: 'PageSignIn'}) // redirect to sign in page when user tries to do auth required access
+      }
+    } else if (to.matched.some(route => route.meta.requiresGuest)) { // if the routes has meta of requiresGuest
+      // protected route
+      if (!user) { // proceed only if no auth user exist
+        next()
+      } else {
+        next({name: 'PageHome'}) // navigate to home when user exist
       }
     } else { // if the routes doesnt require meta of requiresAuth, just navigate
       next()
