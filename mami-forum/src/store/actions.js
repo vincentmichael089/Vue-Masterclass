@@ -4,9 +4,8 @@ export default {
 
   initAuthentication (context) {
     return new Promise((resolve, reject) => {
-      // unsubscribe observer if already listening
-      if (context.state.unsubscribeAuthObserver) {
-        context.state.unsubscribeAuthObserver()
+      if (context.state.unsubscribeAuthObserver) { // if there is observer already
+        context.state.unsubscribeAuthObserver() // unsubscribe so there is no multiple observer
       }
 
       const unsubscribe = firebase.auth().onAuthStateChanged(user => {
@@ -18,7 +17,7 @@ export default {
         }
       })
 
-      context.commit('setUnsubscribeAuthObserver', unsubscribe)
+      context.commit('setUnsubscribeAuthObserver', unsubscribe) // unsubscribe can be called to unsubscribe the observer. example = unsubscribe()
     })
   },
 
