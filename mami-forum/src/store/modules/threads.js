@@ -5,6 +5,8 @@ import Vue from 'vue'
 import {makeAddChildToParentMutation} from '@/store/assetHelpers'
 
 export default {
+  namespaced: true,
+
   state: {
     items: {} // state.threads must be changed to state.items by this change
   },
@@ -18,7 +20,7 @@ export default {
       return new Promise((resolve, reject) => {
         const threadId = firebase.database().ref('threads').push().key
         const timestamp = Math.floor(Date.now() / 1000)
-        const userId = context.state.authId
+        const userId = context.rootState.auth.authId
 
         const postId = firebase.database().ref('posts').push().key
 
@@ -52,14 +54,14 @@ export default {
         firebase.database().ref().update(updates)
         .then(() => {
           // update thread
-          context.commit('setItem', {resource: 'threads', item: thread, id: threadId})
-          context.commit('addThreadToForum', {childId: threadId, parentId: forumId})
-          context.commit('addThreadToUser', {childId: threadId, parentId: userId})
+          context.commit('setItem', {resource: 'threads', item: thread, id: threadId}, {root: true})
+          context.commit('forums/addThreadToForum', {childId: threadId, parentId: forumId}, {root: true})
+          context.commit('users/addThreadToUser', {childId: threadId, parentId: userId}, {root: true})
 
           // update post
-          context.commit('setItem', {resource: 'posts', item: post, id: postId})
-          context.commit('addPostToThread', {parentId: post.threadId, childId: postId})
-          context.commit('addPostToUser', {childId: postId, parentId: post.userId})
+          context.commit('setItem', {resource: 'posts', item: post, id: postId}, {root: true})
+          context.commit('threads/addPostToThread', {parentId: post.threadId, childId: postId}, {root: true})
+          context.commit('users/addPostToUser', {childId: postId, parentId: post.userId}, {root: true})
 
           resolve(context.state.items[threadId])
         })
@@ -78,7 +80,7 @@ export default {
 
         const edited = {
           at: Math.floor(Date.now() / 1000),
-          by: context.state.authId
+          by: context.rootState.auth.authId
         }
 
         const updates = {}
@@ -88,19 +90,19 @@ export default {
 
         firebase.database().ref().update(updates)
         .then(() => {
-          context.commit('setThread', {thread: newThread, threadId: id})
-          context.commit('setPost', {post: {...post, text, edited}, postId: thread.firstPostId})
+          context.commit('threads/setThread', {thread: newThread, threadId: id}, {root: true})
+          context.commit('posts/setPost', {post: {...post, text, edited}, postId: thread.firstPostId}, {root: true})
           resolve(post)
         })
       })
     },
 
     fetchThread (context, {id}) {
-      return context.dispatch('fetchItem', {resource: 'threads', id})
+      return context.dispatch('fetchItem', {resource: 'threads', id}, {root: true})
     },
 
     fetchThreads (context, {ids}) {
-      return context.dispatch('fetchItems', {resource: 'threads', ids})
+      return context.dispatch('fetchItems', {resource: 'threads', ids}, {root: true})
     }
   },
   mutations: {

@@ -4,6 +4,8 @@ import Vue from 'vue'
 import {makeAddChildToParentMutation} from '@/store/assetHelpers'
 
 export default {
+  namespaced: true,
+
   state: {
     items: {}
   },
@@ -16,12 +18,12 @@ export default {
       return id => countObjectProperties(state.items[id].threads)
     },
 
-    userPosts (state) {
+    userPosts (state, getters, rootState) {
       return id => {
         const user = state.items[id]
 
         if (user.posts) { // if user has posts
-          return Object.values(state.posts).filter(post => post.userId === id)
+          return Object.values(rootState.posts.item).filter(post => post.userId === id)
         }
         return []
       }
@@ -37,7 +39,7 @@ export default {
 
         firebase.database().ref('users').child(id).set(user)
         .then(() => {
-          context.commit('setItem', {item: user, id: id, resource: 'users'})
+          context.commit('setItem', {item: user, id: id, resource: 'users'}, {root: true})
           resolve(context.state.items[id])
         })
       })
@@ -64,11 +66,11 @@ export default {
     },
 
     fetchUser (context, {id}) {
-      return context.dispatch('fetchItem', {resource: 'users', id})
+      return context.dispatch('fetchItem', {resource: 'users', id}, {root: true})
     },
 
     fetchUsers (context, {ids}) {
-      return context.dispatch('fetchItems', {resource: 'users', ids})
+      return context.dispatch('fetchItems', {resource: 'users', ids}, {root: true})
     }
   },
   mutations: {

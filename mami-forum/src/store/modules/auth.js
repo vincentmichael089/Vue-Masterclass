@@ -1,13 +1,15 @@
 import firebase from 'firebase'
 
 export default {
+  namespaced: true,
+
   state: {
     authId: null,
     unsubscribeAuthObserver: null
   },
   getters: {
-    authUser (state) {
-      return state.authId ? state.users[state.authId] : null
+    authUser (state, getters, rootState) { // state is local state and rootState is global state
+      return state.authId ? rootState.users.items[state.authId] : null // to access users we need to move global, because this module doesnt held users state
     }
   },
   actions: {
@@ -33,7 +35,8 @@ export default {
     registerUserWithEmailAndPassword (context, {email, name, username, password, avatar = null}) {
       return firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
-        return context.dispatch('createUser', {id: userCredential.user.uid, email, name, username, avatar})
+        // use users/ namespace to access other modules actions. dont forget to set root to true
+        return context.dispatch('users/createUser', {id: userCredential.user.uid, email, name, username, avatar}, {root: true})
       })
       .then(() => context.dispatch('fetchAuthUser'))
     },
@@ -49,13 +52,15 @@ export default {
           const user = data.user
           firebase.database().ref('users').child(user.uid).once('value', snapshot => {
             if (!snapshot.exists()) { // if user isnt registered
-              return context.dispatch('createUser', {
+              // use users/ namespace to access other modules actions. dont forget to set root to true
+              return context.dispatch('users/createUser', {
                 id: user.uid,
                 name: user.displayName,
                 email: user.email,
                 username: user.email,
                 avatar: user.photoURL
-              })
+              },
+              {root: true})
               .then(() => context.dispatch('fetchAuthUser'))
             }
           })
@@ -75,7 +80,8 @@ export default {
       return new Promise((resolve, reject) => {
         firebase.database().ref('users').child(userId).once('value', snapshot => {
           if (snapshot.exists()) { // check if user exists in the database
-            return context.dispatch('fetchUser', {id: userId}) // fetch the current user data
+            // use users/ namespace to access other modules actions. dont forget to set root to true
+            return context.dispatch('users/fetchUser', {id: userId}, {root: true}) // fetch the current user data
               .then(user => {
                 context.commit('setAuthId', userId) // set the state authId to userId
                 resolve(user)

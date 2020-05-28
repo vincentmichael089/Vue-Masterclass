@@ -1,6 +1,8 @@
 import firebase from 'firebase'
 import Vue from 'vue'
 export default {
+  namespaced: true,
+
   state: {
     items: {}
   },
@@ -8,7 +10,7 @@ export default {
     createPost (context, post) {
       const postId = firebase.database().ref('posts').push().key
       const timestamp = Math.floor(Date.now() / 1000)
-      post.userId = context.state.authId
+      post.userId = context.rootState.auth.authId
       post.publishedAt = timestamp
 
       const updates = {}
@@ -20,10 +22,10 @@ export default {
 
       firebase.database().ref().update(updates)
       .then(() => {
-        context.commit('setItem', {resource: 'posts', item: post, id: postId})
-        context.commit('addPostToThread', {parentId: post.threadId, childId: postId})
-        context.commit('addPostToUser', {childId: postId, parentId: post.userId})
-        context.commit('addContributorToThread', {parentId: post.threadId, childId: post.userId})
+        context.commit('setItem', {resource: 'posts', item: post, id: postId}, {root: true})
+        context.commit('threads/addPostToThread', {parentId: post.threadId, childId: postId}, {root: true})
+        context.commit('users/addPostToUser', {childId: postId, parentId: post.userId}, {root: true})
+        context.commit('threads/addContributorToThread', {parentId: post.threadId, childId: post.userId}, {root: true})
         return Promise.resolve(context.state.items[postId])
       })
     },
@@ -33,7 +35,7 @@ export default {
         const post = context.state.items[id]
         const edited = {
           at: Math.floor(Date.now() / 1000),
-          by: context.state.authId
+          by: context.rootState.auth.authId
         }
 
         const updates = {}
@@ -48,11 +50,11 @@ export default {
     },
 
     fetchPost (context, {id}) {
-      return context.dispatch('fetchItem', {resource: 'posts', id})
+      return context.dispatch('fetchItem', {resource: 'posts', id}, {root: true})
     },
 
     fetchPosts (context, {ids}) {
-      return context.dispatch('fetchItems', {resource: 'posts', ids})
+      return context.dispatch('fetchItems', {resource: 'posts', ids}, {root: true})
     }
   },
   mutations: {
