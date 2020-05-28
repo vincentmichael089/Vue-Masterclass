@@ -80,14 +80,6 @@ export default {
     })
   },
 
-  fetchCategory (context, {id}) {
-    return context.dispatch('fetchItem', {resource: 'categories', id})
-  },
-
-  fetchCategories (context, {ids}) {
-    return context.dispatch('fetchItems', {resource: 'categories', ids})
-  },
-
   fetchPost (context, {id}) {
     return context.dispatch('fetchItem', {resource: 'posts', id})
   },
@@ -124,18 +116,5 @@ export default {
   fetchItems (context, {ids, resource}) {
     ids = Array.isArray(ids) ? ids : Object.keys(ids)
     return Promise.all(ids.map(id => context.dispatch('fetchItem', {id, resource})))
-  },
-
-  fetchAllCategories (context) {
-    return new Promise((resolve, reject) => {
-      firebase.database().ref('categories').once('value', snapshot => {
-        const categoriesObject = snapshot.val()
-        Object.keys(categoriesObject).forEach(categoryId => {
-          const category = categoriesObject[categoryId]
-          context.commit('setItem', {resource: 'categories', id: categoryId, item: category})
-        })
-        resolve(Object.values(context.state.categories))
-      })
-    })
   }
 }
