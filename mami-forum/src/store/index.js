@@ -5,12 +5,12 @@ import actions from './actions'
 import mutations from './mutations'
 import getters from './getters'
 
-import auth from './auth'
-import categories from './categories'
-import forums from './forums'
-import posts from './posts'
-import threads from './threads'
-import users from './users'
+import auth from './modules/auth'
+import categories from './modules/categories'
+import forums from './modules/forums'
+import posts from './modules/posts'
+import threads from './modules/threads'
+import users from './modules/users'
 
 Vue.use(vuex)
 
