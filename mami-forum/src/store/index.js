@@ -8,9 +8,7 @@ import getters from './getters'
 Vue.use(vuex)
 
 export default new vuex.Store({
-  state: {
-    posts: {}
-  },
+  state: {},
   getters,
   actions,
   mutations
