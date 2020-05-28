@@ -9,8 +9,7 @@ Vue.use(vuex)
 
 export default new vuex.Store({
   state: {
-    posts: {},
-    users: {}
+    posts: {}
   },
   getters,
   actions,

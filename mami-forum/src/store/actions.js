@@ -2,22 +2,6 @@ import firebase from 'firebase'
 import {removeEmptyProperties} from '@/utils'
 
 export default {
-
-  createUser (context, {id, email, name, username, avatar = null}) {
-    return new Promise((resolve, reject) => {
-      const timestamp = Math.floor(Date.now() / 1000)
-      const usernameLower = username.toLowerCase()
-      email = email.toLowerCase()
-      const user = {avatar, email, name, username, usernameLower, registeredAt: timestamp}
-
-      firebase.database().ref('users').child(id).set(user)
-      .then(() => {
-        context.commit('setItem', {item: user, id: id, resource: 'users'})
-        resolve(context.state.users[id])
-      })
-    })
-  },
-
   createPost (context, post) {
     const postId = firebase.database().ref('posts').push().key
     const timestamp = Math.floor(Date.now() / 1000)
@@ -60,40 +44,12 @@ export default {
     })
   },
 
-  updateUser (context, userData) {
-    const updates = {
-      avatar: userData.avatar,
-      username: userData.username,
-      name: userData.name,
-      bio: userData.bio,
-      website: userData.website,
-      email: userData.email,
-      location: userData.location
-    }
-
-    return new Promise((resolve, reject) => {
-      firebase.database().ref('users').child(userData['.key']).update(removeEmptyProperties(updates))
-      .then(() => {
-        context.commit('setUser', {userId: userData['.key'], userData})
-        resolve(userData)
-      })
-    })
-  },
-
   fetchPost (context, {id}) {
     return context.dispatch('fetchItem', {resource: 'posts', id})
   },
 
   fetchPosts (context, {ids}) {
     return context.dispatch('fetchItems', {resource: 'posts', ids})
-  },
-
-  fetchUser (context, {id}) {
-    return context.dispatch('fetchItem', {resource: 'users', id})
-  },
-
-  fetchUsers (context, {ids}) {
-    return context.dispatch('fetchItems', {resource: 'users', ids})
   },
 
   fetchItem (context, {id, resource}) {
