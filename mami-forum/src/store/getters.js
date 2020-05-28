@@ -14,10 +14,6 @@ export default {
     return id => countObjectProperties(state.users[id].threads)
   },
 
-  threadRepliesCount (state) {
-    return id => countObjectProperties(state.threads[id].posts) - 1
-  },
-
   userPosts (state) {
     return id => {
       const user = state.users[id]

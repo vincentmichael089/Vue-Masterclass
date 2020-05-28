@@ -11,7 +11,6 @@ export default new vuex.Store({
   state: {
     categories: {},
     forums: {},
-    threads: {},
     posts: {},
     users: {},
     authId: null,
