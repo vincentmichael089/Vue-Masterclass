@@ -7,8 +7,6 @@ export default{
 
   addPostToUser: makeAddChildToParentMutation({parent: 'users', child: 'posts'}),
 
-  addThreadToForum: makeAddChildToParentMutation({parent: 'forums', child: 'threads'}),
-
   addThreadToUser: makeAddChildToParentMutation({parent: 'users', child: 'threads'}),
 
   setUser (state, {userId, userData}) {

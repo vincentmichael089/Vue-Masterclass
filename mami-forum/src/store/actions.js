@@ -88,14 +88,6 @@ export default {
     return context.dispatch('fetchItems', {resource: 'posts', ids})
   },
 
-  fetchForum (context, {id}) {
-    return context.dispatch('fetchItem', {resource: 'forums', id})
-  },
-
-  fetchForums (context, {ids}) {
-    return context.dispatch('fetchItems', {resource: 'forums', ids})
-  },
-
   fetchUser (context, {id}) {
     return context.dispatch('fetchItem', {resource: 'users', id})
   },
