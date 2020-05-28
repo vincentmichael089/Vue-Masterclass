@@ -22,9 +22,10 @@
           <label for="username">Username</label>
           <input
           v-on:blur="$v.form.username.$touch()"
-          v-model="form.username" id="username" type="text" class="form-input">
+          v-model.lazy="form.username" id="username" type="text" class="form-input">
            <template v-if="$v.form.username.$error">
             <span v-if="!$v.form.username.required" class="form-error">username is required</span>
+            <span v-if="!$v.form.username.unique" class="form-error">username already in use</span>
           </template>
         </div>
 
@@ -32,10 +33,11 @@
           <label for="email">Email</label>
           <input 
           v-on:blur="$v.form.email.$touch()"
-          v-model="form.email" id="email" type="email" class="form-input">
+          v-model.lazy="form.email" id="email" type="email" class="form-input">
           <template v-if="$v.form.email.$error">
             <span v-if="!$v.form.email.required" class="form-error">email is required</span>
             <span v-else-if="!$v.form.email.email" class="form-error">not a valid email address</span>
+            <span v-else-if="!$v.form.email.unique" class="form-error">email already in use</span>
           </template>
         </div>
 
@@ -72,8 +74,8 @@
 </template>
 
 <script>
-import {required, email, minLength} from 'vuelidate/lib/validators'
-
+import {required, email, minLength, helpers as vuelidateHelpers} from 'vuelidate/lib/validators'
+import firebase from 'firebase'
 export default {
   data () {
     return {
@@ -92,11 +94,29 @@ export default {
         required
       },
       username: {
-        required
+        required,
+        unique (value) {
+          if (!vuelidateHelpers.req(value)) {
+            return true
+          }
+          return new Promise((resolve, reject) => {
+            firebase.database().ref('users').orderByChild('usernameLower').equalTo(value.toLowerCase())
+              .once('value', snapshot => resolve(!snapshot.exists()))
+          })
+        }
       },
       email: {
         required,
-        email
+        email,
+        unique (value) {
+          if (!vuelidateHelpers.req(value)) {
+            return true
+          }
+          return new Promise((resolve, reject) => {
+            firebase.database().ref('users').orderByChild('email').equalTo(value.toLowerCase())
+              .once('value', snapshot => resolve(!snapshot.exists()))
+          })
+        }
       },
       password: {
         required,
