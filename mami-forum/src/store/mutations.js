@@ -18,13 +18,5 @@ export default{
   setItem (state, {item, id, resource}) {
     item['.key'] = id
     Vue.set(state[resource], id, item)
-  },
-
-  setAuthId (state, id) {
-    state.authId = id
-  },
-
-  setUnsubscribeAuthObserver (state, unsubscribe) {
-    state.unsubscribeAuthObserver = unsubscribe
   }
 }

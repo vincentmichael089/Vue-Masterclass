@@ -12,9 +12,7 @@ export default new vuex.Store({
     categories: {},
     forums: {},
     posts: {},
-    users: {},
-    authId: null,
-    unsubscribeAuthObserver: null
+    users: {}
   },
   getters,
   actions,
