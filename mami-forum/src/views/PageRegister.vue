@@ -10,27 +10,51 @@
 
         <div class="form-group">
           <label for="name">Full Name</label>
-          <input v-model="form.name" id="name" type="text" class="form-input">
+          <input 
+          v-on:blur="$v.form.name.$touch()"
+          v-model="form.name" id="name" type="text" class="form-input">
+          <template v-if="$v.form.name.$error">
+            <span v-if="!$v.form.name.required" class="form-error">name is required</span>
+          </template>
         </div>
 
         <div class="form-group">
           <label for="username">Username</label>
-          <input v-model="form.username" id="username" type="text" class="form-input">
+          <input
+          v-on:blur="$v.form.username.$touch()"
+          v-model="form.username" id="username" type="text" class="form-input">
+           <template v-if="$v.form.username.$error">
+            <span v-if="!$v.form.username.required" class="form-error">username is required</span>
+          </template>
         </div>
 
         <div class="form-group">
           <label for="email">Email</label>
-          <input v-model="form.email" id="email" type="email" class="form-input">
+          <input 
+          v-on:blur="$v.form.email.$touch()"
+          v-model="form.email" id="email" type="email" class="form-input">
+          <template v-if="$v.form.email.$error">
+            <span v-if="!$v.form.email.required" class="form-error">email is required</span>
+            <span v-else-if="!$v.form.email.email" class="form-error">not a valid email address</span>
+          </template>
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input v-model="form.password" id="password" type="password" class="form-input">
+          <input 
+          v-on:blur="$v.form.password.$touch()"
+          v-model="form.password" id="password" type="password" class="form-input">
+          <template v-if="$v.form.password.$error">
+            <span v-if="!$v.form.password.required" class="form-error">password is required</span>
+            <span v-else-if="!$v.form.password.minLength" class="form-error">minimum of 6 characters</span>
+          </template>
         </div>
 
         <div class="form-group">
           <label for="avatar">Avatar</label>
-          <input v-model="form.avatar" id="avatar" type="text" class="form-input">
+          <input 
+          v-on:blur="$v.form.avatar.$touch()"
+          v-model="form.avatar" id="avatar" type="text" class="form-input">
         </div>
 
         <div class="form-actions">
@@ -48,6 +72,8 @@
 </template>
 
 <script>
+import {required, email, minLength} from 'vuelidate/lib/validators'
+
 export default {
   data () {
     return {
@@ -60,8 +86,32 @@ export default {
       }
     }
   },
+  validations: {
+    form: {
+      name: {
+        required
+      },
+      username: {
+        required
+      },
+      email: {
+        required,
+        email
+      },
+      password: {
+        required,
+        minLength: minLength(6)
+      }
+    }
+  },
   methods: {
     register () {
+      // check all fields by touch it all
+      this.$v.form.$touch()
+      if (this.$v.form.$invalid) {
+        return // break the register method if form is invalid
+      }
+
       this.$store.dispatch('auth/registerUserWithEmailAndPassword', this.form)
       .then(() => this.successRedirect())
     },
