@@ -18,7 +18,7 @@ export default {
   name: 'PageHome',
   computed: {
     categories () {
-      return Object.values(this.$store.state.categories)
+      return Object.values(this.$store.state.categories.items)
     }
   },
   components: {
@@ -28,10 +28,10 @@ export default {
   mixins: [asyncDataStatus],
 
   beforeCreate () {
-    this.$store.dispatch('fetchAllCategories')
+    this.$store.dispatch('categories/fetchAllCategories')
       .then(categories => {
         Promise.all(categories.map(category => {
-          this.$store.dispatch('fetchForums', {ids: Object.keys(category.forums)})
+          this.$store.dispatch('forums/fetchForums', {ids: Object.keys(category.forums)})
         }))
       })
       .then(() => { this.asyncDataStatus_fetched() })

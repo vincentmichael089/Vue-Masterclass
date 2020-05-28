@@ -23,7 +23,7 @@ export default {
         const user = state.items[id]
 
         if (user.posts) { // if user has posts
-          return Object.values(rootState.posts.item).filter(post => post.userId === id)
+          return Object.values(rootState.posts.items).filter(post => post.userId === id)
         }
         return []
       }

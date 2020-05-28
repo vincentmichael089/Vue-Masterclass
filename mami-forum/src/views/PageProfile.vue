@@ -50,7 +50,6 @@ import PostList from '@/components/PostList'
 import UserProfileCard from '@/components/UserProfileCard'
 import UserProfileCardEditor from '@/components/UserProfileCardEditor'
 import {mapGetters} from 'vuex'
-import {countObjectProperties} from '@/utils'
 import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
@@ -68,21 +67,21 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: 'authUser'
+      user: 'auth/authUser'
     }),
     userThreadsCount () {
-      return this.$store.getters.userThreadsCount(this.user['.key'])
+      return this.$store.getters['users/userThreadsCount'](this.user['.key'])
     },
     userPostsCount () {
-      return this.$store.getters.userPostsCount(this.user['.key'])
+      return this.$store.getters['users/userPostsCount'](this.user['.key'])
     },
     userPosts () {
-      return this.$store.getters.userPosts(this.user['.key'])
+      return this.$store.getters['users/userPosts'](this.user['.key'])
     }
   },
 
   created () {
-    this.$store.dispatch('fetchPosts', {ids: this.user.posts})
+    this.$store.dispatch('posts/fetchPosts', {ids: this.user.posts})
     .then(() => this.asyncDataStatus_fetched())
   }
 }

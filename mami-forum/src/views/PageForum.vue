@@ -38,18 +38,18 @@
       mixins: [asyncDataStatus],
       computed: {
         forum () {
-          return this.$store.state.forums[this.id]
+          return this.$store.state.forums.items[this.id]
         },
         threads () {
-          return Object.values(this.$store.state.threads)
+          return Object.values(this.$store.state.threads.items)
             .filter(thread => thread.forumId === this.id)
         }
       },
       created () {
-        this.$store.dispatch('fetchForum', {id: this.id})
-        .then(forum => this.$store.dispatch('fetchThreads', {ids: forum.threads}))
+        this.$store.dispatch('forums/fetchForum', {id: this.id})
+        .then(forum => this.$store.dispatch('threads/fetchThreads', {ids: forum.threads}))
         .then(threads => Promise.all(
-          threads.map(thread => this.$store.dispatch('fetchUser', {id: thread.userId}))
+          threads.map(thread => this.$store.dispatch('users/fetchUser', {id: thread.userId}))
         ))
         .then(() => this.asyncDataStatus_fetched())
       }

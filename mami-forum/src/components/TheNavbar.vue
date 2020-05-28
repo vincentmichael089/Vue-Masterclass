@@ -56,7 +56,7 @@
                   signOut event triggered on click event
                   @event click
                 -->
-                <a v-on:click.prevent="$store.dispatch('signOut')">Sign Out</a>
+                <a v-on:click.prevent="$store.dispatch('auth/signOut')">Sign Out</a>
               </li>
             </ul>
           </div>
@@ -90,7 +90,7 @@
 
     computed: {
       ...mapGetters({
-        'user': 'authUser'
+        'user': 'auth/authUser' // pass the auth namespace
       })
     }
   }

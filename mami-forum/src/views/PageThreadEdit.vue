@@ -25,7 +25,7 @@
 <script>
 import ThreadEditor from '@/components/ThreadEditor'
 import asyncDataStatus from '@/mixins/asyncDataStatus'
-import store from '@/store'
+
 export default {
   components: {
     ThreadEditor
@@ -39,7 +39,7 @@ export default {
   mixins: [asyncDataStatus],
   methods: {
     save ({title, text}) {
-      this.$store.dispatch('updateThread', {
+      this.$store.dispatch('threads/updateThread', {
         id: this.id,
         title,
         text
@@ -51,11 +51,11 @@ export default {
   },
   computed: {
     thread () {
-      return this.$store.state.threads[this.id]
+      return this.$store.state.threads.items[this.id]
     },
     text () {
       // firstPostId is the first post or the beginning of the thread, so editing it means editing the thread post
-      const post = this.$store.state.posts[this.thread.firstPostId]
+      const post = this.$store.state.posts.items[this.thread.firstPostId]
       return post ? post.text : null
     },
 
@@ -66,8 +66,8 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('fetchThread', {id: this.id})
-    .then(thread => this.$store.dispatch('fetchPost', {id: thread.firstPostId}))
+    this.$store.dispatch('threads/fetchThread', {id: this.id})
+    .then(thread => this.$store.dispatch('posts/fetchPost', {id: thread.firstPostId}))
     .then(() => this.asyncDataStatus_fetched())
   },
 

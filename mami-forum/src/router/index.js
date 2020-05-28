@@ -85,7 +85,7 @@ const router = new Router({
       name: 'PageSignOut',
       meta: { requiresAuth: true },
       beforeEnter (to, from, next) {
-        store.dispatch('signOut') // dont use this.store because signOut is global scope
+        store.dispatch('auth/signOut') // dont use this.store because signOut is global scope
         .then(() => next({name: 'PageHome'}))
       }
     },
@@ -98,7 +98,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  store.dispatch('initAuthentication')
+  store.dispatch('auth/initAuthentication')
   .then(user => {
     if (to.matched.some(route => route.meta.requiresAuth)) { // if the routes has meta of requiresAuth
       // protected route

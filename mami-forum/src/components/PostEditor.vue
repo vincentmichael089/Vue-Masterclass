@@ -67,7 +67,7 @@ export default {
         threadId: this.threadId
       }
       this.postData = ''
-      return this.$store.dispatch('createPost', post) // return a promise (check store)
+      return this.$store.dispatch('posts/createPost', post) // return a promise (check store)
     },
 
     update () {
@@ -76,7 +76,7 @@ export default {
         newText: this.postData
       }
 
-      return this.$store.dispatch('updatePost', payload) // return a promise (check store)
+      return this.$store.dispatch('posts/updatePost', payload) // return a promise (check store)
     },
 
     persist () {

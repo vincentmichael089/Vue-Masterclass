@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import firebase from 'firebase'
 import asyncDataStatus from '@/mixins/asyncDataStatus'
 import {mapGetters} from 'vuex'
 import PostList from '@/components/PostList'
@@ -64,30 +63,30 @@ export default {
   mixins: [asyncDataStatus],
   computed: {
     ...mapGetters({
-      authUser: 'authUser'
+      authUser: 'auth/authUser'
     }),
     thread () {
-      return this.$store.state.threads[this.id]
+      return this.$store.state.threads.items[this.id]
     },
     creator () {
-      return this.$store.state.users[this.$store.state.threads[this.id].userId]
+      return this.$store.state.users.items[this.$store.state.threads.items[this.id].userId]
     },
     posts () {
       const postIds = Object.values(this.thread.posts) // post ids that belong to the thread
-      return Object.values(this.$store.state.posts).filter(post => postIds.includes(post['.key'])) // change to array and find the post that is in posts
+      return Object.values(this.$store.state.posts.items).filter(post => postIds.includes(post['.key'])) // change to array and find the post that is in posts
     },
     repliesCount () {
-      return this.$store.getters.threadRepliesCount(this.thread['.key'])
+      return this.$store.getters['threads/threadRepliesCount'](this.thread['.key'])
     },
     contributorsCount () {
       return countObjectProperties(this.thread.contributors)
     }
   },
   created () {
-    this.$store.dispatch('fetchThread', {id: this.id})
-    .then(thread => this.$store.dispatch('fetchPosts', {ids: Object.keys(thread.posts)}))
+    this.$store.dispatch('threads/fetchThread', {id: this.id})
+    .then(thread => this.$store.dispatch('posts/fetchPosts', {ids: Object.keys(thread.posts)}))
     .then(posts => Promise.all(
-      posts.map(post => this.$store.dispatch('fetchUser', {id: post.userId}))
+      posts.map(post => this.$store.dispatch('users/fetchUser', {id: post.userId}))
     ))
     .then(() => this.asyncDataStatus_fetched())
   }

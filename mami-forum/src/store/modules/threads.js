@@ -73,7 +73,7 @@ export default {
         const thread = context.state.items[id]
         // const post = context.state.posts[thread.firstPostId]
 
-        const post = context.state.posts[thread.firstPostId]
+        const post = context.rootState.posts.items[thread.firstPostId]
 
         const newThread = {...thread, title}
         // const newPost = {...post, text}
