@@ -21,7 +21,7 @@
     <!-- use .navbar-open to open nav -->
     <nav class="navbar">
       <ul v-if="user">
-        <li class="navbar-user">
+        <li class="navbar-user" v-click-outside="closeUserDropdown"> 
           <!--
             dropdown toggle triggered on click event
             @event click
@@ -80,8 +80,13 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import clickOutside from '@/directives/click-outside'
 
   export default {
+    directives: {
+      clickOutside
+    },
+
     data () {
       return {
         userDropdownOpen: false
@@ -92,6 +97,12 @@
       ...mapGetters({
         'user': 'auth/authUser' // pass the auth namespace
       })
+    },
+
+    methods: {
+      closeUserDropdown () {
+        this.userDropdownOpen = false
+      }
     }
   }
 </script>
