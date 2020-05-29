@@ -1,5 +1,5 @@
 <template>
-  <header class="header" id="header">
+  <header class="header" id="header" v-click-outside="closeMobileNavbar">
     <!--
       @router-link
         @binding {route} to route to PageHome
@@ -11,7 +11,7 @@
       <img src="../assets/img/vueschool-logo.svg">
     </router-link>
 
-    <div class="btn-hamburger">
+    <div class="btn-hamburger" v-on:click="mobileNavOpen = !mobileNavOpen">
       <!-- use .btn-humburger-active to open the menu -->
       <div class="top bar"></div>
       <div class="middle bar"></div>
@@ -19,7 +19,7 @@
     </div>
 
     <!-- use .navbar-open to open nav -->
-    <nav class="navbar">
+    <nav class="navbar" v-bind:class="{'navbar-open': mobileNavOpen}">
       <ul v-if="user">
         <li class="navbar-user" v-click-outside="closeUserDropdown"> 
           <!--
@@ -61,6 +61,9 @@
             </ul>
           </div>
         </li>
+        <!--2 li below is used in mobile view when user logged in-->
+        <li class="navbar-mobile-item"><router-link :to="{name: 'PageProfile'}">View Profile</router-link></li>
+        <li class="navbar-mobile-item"><a @click.prevent="$store.dispatch('auth/signOut')">Sign Out</a></li>
       </ul>
       <ul v-else>
         <!--
@@ -89,7 +92,8 @@
 
     data () {
       return {
-        userDropdownOpen: false
+        userDropdownOpen: false,
+        mobileNavOpen: false
       }
     },
 
@@ -102,6 +106,9 @@
     methods: {
       closeUserDropdown () {
         this.userDropdownOpen = false
+      },
+      closeMobileNavbar () {
+        this.mobileNavOpen = false
       }
     }
   }
