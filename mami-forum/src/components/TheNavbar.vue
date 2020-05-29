@@ -1,5 +1,5 @@
 <template>
-  <header class="header" id="header" v-click-outside="closeMobileNavbar">
+  <header class="header" id="header" v-click-outside="closeMobileNavbar" v-handle-scroll="closeMobileNavbar">
     <!--
       @router-link
         @binding {route} to route to PageHome
@@ -84,10 +84,12 @@
 <script>
   import {mapGetters} from 'vuex'
   import clickOutside from '@/directives/click-outside'
+  import handleScroll from '@/directives/handle-scroll'
 
   export default {
     directives: {
-      clickOutside
+      clickOutside,
+      handleScroll
     },
 
     data () {
