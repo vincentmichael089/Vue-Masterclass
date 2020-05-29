@@ -57,6 +57,10 @@
           <input 
           v-on:blur="$v.form.avatar.$touch()"
           v-model="form.avatar" id="avatar" type="text" class="form-input">
+          <template v-if="$v.form.avatar.$error">
+            <span v-if="!$v.form.avatar.url" class="form-error">not an image url</span>
+            <span v-else-if="!$v.form.avatar.supportedImageFile" class="form-error">image format not supported</span>
+          </template>
         </div>
 
         <div class="form-actions">
@@ -74,7 +78,7 @@
 </template>
 
 <script>
-import {required, email, minLength, helpers as vuelidateHelpers} from 'vuelidate/lib/validators'
+import {required, email, minLength, url, helpers as vuelidateHelpers} from 'vuelidate/lib/validators'
 import firebase from 'firebase'
 export default {
   data () {
@@ -121,6 +125,28 @@ export default {
       password: {
         required,
         minLength: minLength(6)
+      },
+      avatar: {
+        url,
+        supportedImageFile (value) {
+          if (!vuelidateHelpers.req(value)) {
+            return true
+          }
+
+          const supported = ['jpg', 'jpeg', 'gif', 'png', 'svg']
+          const suffix = value.split('.').pop() // split string by dot, and extract the last item (ext of files)
+          return supported.includes(suffix) // return boolean if contained in supported
+        }
+        // ,responseOk (value) { // make sure image is obtainable
+        //   if (!vuelidateHelpers.req(value)) {
+        //     return true
+        //   }
+        //   return new Promise((resolve, reject) => {
+        //     fetch(value)
+        //       .then(response => resolve(response.ok))
+        //       .catch(() => resolve(false))
+        //   })
+        // }
       }
     }
   },
