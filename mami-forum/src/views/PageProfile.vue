@@ -65,10 +65,10 @@ export default {
       default: false
     }
   },
-  computed: {
-    ...mapGetters({
-      user: 'auth/authUser'
-    }),
+    computed: {
+      ...mapGetters({
+        user: 'auth/authUser'
+      }),
     userThreadsCount () {
       return this.$store.getters['users/userThreadsCount'](this.user['.key'])
     },
